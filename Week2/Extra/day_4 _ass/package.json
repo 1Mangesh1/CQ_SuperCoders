@@ -1,0 +1,11 @@
+{
+  "name": "folder-file-operations",
+  "version": "0.0.1",
+  "description": "This solution for assignments number 3 of supercoders course.",
+  "main": "main.js",
+  "scripts": {
+    "test": "node main.js"
+  },
+  "author": "Hemant Patil",
+  "license": "ISC"
+}

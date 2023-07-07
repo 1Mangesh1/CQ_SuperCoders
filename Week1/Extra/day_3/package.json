@@ -1,0 +1,14 @@
+{
+  "name": "hello-world",
+  "version": "0.0.1",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "node main.js"
+  },
+  "author": "Hemant",
+  "license": "MIT",
+  "dependencies": {
+    "area-of-square": "^1.0.1"
+  }
+}

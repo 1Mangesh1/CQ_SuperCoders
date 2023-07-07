@@ -1,0 +1,11 @@
+{
+  "name": "assignment-2-sol",
+  "version": "0.0.1",
+  "description": "Solution for \"Random Number between given range\"",
+  "main": "main.js",
+  "scripts": {
+    "test": "node main.js"
+  },
+  "author": "Hemant Patil",
+  "license": "ISC"
+}
