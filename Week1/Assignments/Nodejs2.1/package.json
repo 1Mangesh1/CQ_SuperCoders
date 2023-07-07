@@ -1,0 +1,11 @@
+{
+  "name": "random_num_generator-arithmetic_operations",
+  "version": "1.0.0",
+  "description": "generates random numbers within given range and does basic arithmetic operations on them",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "author": "Mangesh Bide",
+  "license": "MIT"
+}

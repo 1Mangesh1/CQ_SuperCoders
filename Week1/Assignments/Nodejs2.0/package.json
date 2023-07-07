@@ -1,0 +1,11 @@
+{
+  "name": "random_num_generator-arithmetic_operations_by_user_choice",
+  "version": "1.0.0",
+  "description": "generates random numbers within given range and does basic arithmetic operations on them according to user's choice",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "author": "Mangesh Bide",
+  "license": "MIT"
+}
