@@ -1,0 +1,74 @@
+Exercise 1: Create a program that recursively searches a directory for files with a specific extension and copies them to a new directory.
+
+const fs = require('fs');
+const path = require('path');
+const { copyFileSync, existsSync, mkdirSync } = fs;
+
+function copyFilesWithSameExtension(sourceDir, targetDir, extension) {
+  if (!existsSync(targetDir)) {
+    mkdirSync(targetDir, { recursive: true }); 
+  }
+  const files = fs.readdirSync(sourceDir);
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const filePath = path.join(sourceDir, file);
+    const stats = fs.statSync(filePath);
+    if (stats.isDirectory()) {
+      copyFilesWithSameExtension(filePath, targetDir, extension);
+    } else if (path.extname(file) === extension) {
+      const targetFile = path.join(targetDir, file);
+      copyFileSync(filePath, targetFile);
+      console.log(`Copied ${filePath} to ${targetFile}`);
+    }
+  }
+}
+
+const sourceDirectory = 'F:/SuperCoder/04_FileSystem/Assgn_4-Part-I/temp';
+const targetDirectory = 'F:/SuperCoder/04_FileSystem/Assgn_4-Part-I';
+const fileExtension = '.txt';
+copyFilesWithSameExtension(sourceDirectory, targetDirectory, fileExtension);
+
+----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------
+
+Example 2: Demonstrate a simple Node.js program that reads a file and prints its contents to the console.
+
+file1.js
+
+const fs = require("fs");
+const data = fs.readFileSync("./greeting.txt","utf-8");
+console.log(data);
+
+greeting.txt
+
+Good Morning , Have a nice day ahead.
+
+----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------
+
+Exercise 3: Create a Node.js program that takes user input from the command line and writes it to a file.
+
+const fs = require('fs');
+const readline = require('readline');
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+rl.question('Enter your text: ', (input) => {
+  rl.close();
+
+  fs.writeFile('output.txt', input, (err) => {
+    if (err) {
+      console.error('Error:', err);
+    } else {
+      console.log('Successfully wrote to file!');
+    }
+  });
+});
+
+
+output.txt
+
+3232

@@ -1,0 +1,21 @@
+{
+  "name": "demo1",
+  "version": "1.0.0",
+  "description": ".",
+  "main": "index.js",
+  "scripts": {
+    "test": "."
+  },
+  "repository": {
+    "type": "git",
+    "url": "."
+  },
+  "keywords": [
+    "."
+  ],
+  "author": ".",
+  "license": "MIT",
+  "dependencies": {
+    "area-of-square": "^1.0.1"
+  }
+}
