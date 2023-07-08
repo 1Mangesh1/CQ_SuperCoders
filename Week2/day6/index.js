@@ -1,0 +1,20 @@
+// read about callbacks and closure
+// https://www.w3schools.com/js/js_callback.asp
+// https://www.w3schools.com/js/js_function_closures.asp
+// https://www.w3schools.com/js/js_arrow_function.asp
+// https://www.w3schools.com/js/js_function_call.asp
+// https://www.w3schools.com/js/js_function_apply.asp
+// https://www.w3schools.com/js/js_function_bind.asp
+// https://www.w3schools.com/js/js_this.asp
+// https://www.w3schools.com/js/js_function_call.asp
+// https://www.w3schools.com/js/js_function_apply.asp
+// https://www.w3schools.com/js/js_function_bind.asp
+// https://www.w3schools.com/js/js_this.asp
+// https://www.w3schools.com/js/js_function_call.asp    
+// https://www.w3schools.com/js/js_function_apply.asp
+// https://www.w3schools.com/js/js_function_bind.asp
+// https://www.w3schools.com/js/js_this.asp
+// https://www.w3schools.com/js/js_function_call.asp
+// https://www.w3schools.com/js/js_function_apply.asp
+// https://www.w3schools.com/js/js_function_bind.asp
+// https://www.w3schools.com/js/js_this.asp
