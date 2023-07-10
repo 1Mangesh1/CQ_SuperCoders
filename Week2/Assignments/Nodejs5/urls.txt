@@ -3,4 +3,4 @@ https://jsonplaceholder.typicode.com/posts
 https://jsonplaceholder.typicode.com/comments
 https://jsonplaceholder.typicode.com/photos
 https://jsonplaceholder.typicode.com/todos
-https://jsonplac_eholder.typicode.com/users
+https://jsonplaceholder.typicode.com/users
