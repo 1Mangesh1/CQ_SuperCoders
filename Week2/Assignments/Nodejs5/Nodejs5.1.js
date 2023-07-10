@@ -1,10 +1,10 @@
 const fs = require("fs");
-const http = require("http");
+//const http = require("http");
 const https = require("https");
 
 function makeHttpRequest(url) {
-  const protocolModule = url.startsWith("https://") ? https : http;
-
+  //const protocolModule = url.startsWith("https://") ? https : http;
+  const protocolModule = https;
   return new Promise(function (resolve, reject) {
     protocolModule
       .get(url, function (response) {
