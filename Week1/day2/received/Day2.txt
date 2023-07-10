@@ -1,0 +1,46 @@
+var , let , const
+
+compiler and interpreter ( modiji goes on the adventure to russia )
+
+JS : JS engine
+Google : V8 engine
+
+
+node js is a runtime , Dino js , bun.js
+
+
+node js, made v8 engine from google
+
+
+ES6 : ECMA 2015 
+
+
+
+var : 
+
+let : lexical scope / block level scope , No hoisting, no redeclaration, reassignment allowed,
+
+const : 
+
+== and ===
+value only : "5" == 5
+
+and 
+
+type and value in ===
+
+'5' === 5 // false 
+
+
+typecasting :
+
+parseFloat , parseInt
+
+if for string input ( NaN )
+
+commander, enquirer : dont use
+
+var std = require("fs");
+
+
+sidharth.joshi@codequotient.com //portal query
