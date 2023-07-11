@@ -9,7 +9,7 @@ const rl = readline.createInterface({
 function writeToFile(filePath, data) {
   fs.writeFile(filePath, data, 'utf8', (err) => {
     if (err) {
-      console.error(`Error writing to file: ${err}`);
+      console.error("Error writing to file: ", err);
     } else {
       console.log('Data written to file successfully.');
     }
