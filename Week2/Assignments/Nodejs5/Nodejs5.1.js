@@ -29,7 +29,7 @@ async function fetchDataFromFile(filePath) {
   try {
     const fileData = fs.readFileSync(filePath, "utf8");
     const urls = fileData.split("\n");
-    
+
     for (let i = 0; i < urls.length; i++) {
       const url = urls[i].trim();
       if (url !== "") {
@@ -37,7 +37,7 @@ async function fetchDataFromFile(filePath) {
         var x = i.toString().trim();
         const fileName = "url_" + x + ".json";
         fs.writeFileSync(fileName, response);
-        console.log("data from",url,"saved to", fileName);
+        console.log("data from", url, "saved to", fileName);
       }
     }
   } catch (error) {
