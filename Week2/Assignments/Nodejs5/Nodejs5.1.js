@@ -34,8 +34,8 @@ async function fetchDataFromFile(filePath) {
       const url = urls[i].trim();
       if (url !== "") {
         const response = await makeHttpRequest(url);
-        var x = i.toString().trim();
-        const fileName = "url_" + x + ".json";
+        //var x = i.toString().trim();
+        const fileName = "url_" + i + ".json";
         fs.writeFileSync(fileName, response);
         console.log("data from", url, "saved to", fileName);
       }
