@@ -22,5 +22,5 @@ fs.readdir("./files", function (err, files) {
         console.log(files[i] + " is unknown");
       }
     });
-  }
+  } 
 });
