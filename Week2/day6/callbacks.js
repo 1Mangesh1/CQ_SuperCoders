@@ -172,10 +172,13 @@ function onComplete(src, callback) {
   });
 }
 
-readFiles("./dummy.txt", onCompleteWrapper){
-  if(error){
-    console.log(error);
-    callme();
-    return;
-  }
-}
+readFiles("./dummy.txt", onCompleteWrapper) 
+// {
+//   if(error){
+//     console.log(error);
+//     callme();
+//     return;
+//   }
+//   console.log(data);
+//   callback(src);
+// }

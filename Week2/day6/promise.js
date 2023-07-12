@@ -32,6 +32,7 @@
 // afterSomeTime(1000,function(){
 //     console.log("Hello World after 1 second");
 // });
+
 const fs = require('fs');
 
 function readFile(time,callback){

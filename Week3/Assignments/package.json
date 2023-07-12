@@ -5,8 +5,10 @@
   "main": "Nodejs6.js",
   "scripts": {
     "test": "npm test"
-    
   },
   "author": "mangesh",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }

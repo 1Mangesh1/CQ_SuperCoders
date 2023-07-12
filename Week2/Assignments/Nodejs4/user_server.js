@@ -17,6 +17,7 @@ const receptor = function(request, response) {
       apiResponse.on('data', function(chunk) {
         data += chunk;
       });
+      //string pipe
 
       apiResponse.on('end', function() {
         fs.writeFile(filePath, data, 'utf8', function(err) {
