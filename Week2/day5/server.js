@@ -7,9 +7,9 @@ const receptor = function (request, response) {
 
   if (method === "GET") {
     if (url === "/") {
-      response.setHeader(200, {
-        "Content-Type": "text/html",
-      });
+      response.setHeader( 
+        "Content-Type", "text/html",
+      );
 
       fs.readFile("index.html", function (err, data) {
         if (err) {
