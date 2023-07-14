@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "cross-env": "^7.0.3"
+  },
+  "name": "day1",
+  "version": "1.0.0",
+  "main": "childProcess.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+      "start" : "cross-env NAME=mangesh node envVars.js",
+        "start:dev" : "cross-env NODE_ENV=development node envVars.js",
+     "start:prod" : "cross-env NODE_ENV=production node prod.js "
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
