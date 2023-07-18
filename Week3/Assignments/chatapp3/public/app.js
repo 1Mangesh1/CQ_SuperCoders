@@ -122,7 +122,7 @@ socket.on("chatMessage", ({ username, message }) => {
 });
 
 socket.on("privateMessage", ({ sender, message }) => {
-  addPrivateMessage(sender, message,privateMessages = false);
+  addPrivateMessage(sender, message);
 });
 
 socket.on("privateMessageError", ({ recipient, message }) => {
@@ -137,3 +137,5 @@ form.addEventListener("submit", (e) => {
       input.value = "";
     }
   });
+
+  
