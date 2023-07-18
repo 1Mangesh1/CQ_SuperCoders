@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chat App - Chatroom</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+      }
+
+      #chatContainer {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+      }
+
+      #chatBox {
+        background: #fff;
+        width: 400px;
+        padding: 1rem;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        overflow-y: auto;
+        height: 70vh;
+        margin-bottom: 1rem;
+      }
+
+      #messageInput {
+        width: 100%;
+        padding: 0.5rem;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      #userList {
+        background: #fff;
+        width: 400px;
+        padding: 1rem;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        overflow-y: auto;
+        height: 20vh;
+      }
+
+      .message {
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+        border-radius: 3px;
+      }
+
+      .ownMessage {
+        background-color: #007bff;
+        color: #fff;
+        align-self: flex-end;
+      }
+
+      .otherMessage {
+        background-color: #efefef;
+        color: #000;
+        align-self: flex-start;
+      }
+
+      .userJoinMessage {
+        background-color: #28a745;
+        color: #fff;
+        align-self: center;
+      }
+
+      .userLeaveMessage {
+        background-color: #dc3545;
+        color: #fff;
+        align-self: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chatContainer">
+      <div id="chatBox"></div>
+      <input type="text" id="messageInput" placeholder="Type your message..." />
+      <div id="userList"></div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const chatBox = document.getElementById("chatBox");
+      const messageInput = document.getElementById("messageInput");
+      const userList = document.getElementById("userList");
+
+      const socket = io();
+      const urlParams = new URLSearchParams(window.location.search);
+      const name = urlParams.get("name");
+      const username = urlParams.get("username");
+
+      socket.emit("join", { name, username });
+
+      socket.on("userList", (users) => {
+        userList.innerHTML = "";
+        users.forEach((user) => {
+          const item = document.createElement("div");
+          item.textContent = user;
+          userList.appendChild(item);
+        });
+      });
+
+      socket.on("message", (data) => {
+        const { sender, message, type } = data;
+        const messageElement = document.createElement("div");
+        messageElement.textContent = `${sender}: ${message}`;
+        messageElement.classList.add("message", type === "own" ? "ownMessage" : "otherMessage");
+        chatBox.appendChild(messageElement);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      });
+
+      messageInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          const message = messageInput.value.trim();
+          if (message) {
+            socket.emit("chat message", message);
+            messageInput.value = "";
+            const messageElement = document.createElement("div");
+            messageElement.textContent = `You: ${message}`;
+            messageElement.classList.add("message", "ownMessage");
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight;
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

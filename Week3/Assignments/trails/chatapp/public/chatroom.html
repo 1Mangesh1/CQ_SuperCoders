@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chatroom</title>
+    <style>
+      body {
+        margin: 0;
+        padding-bottom: 3rem;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 50px auto;
+      }
+
+      #messages {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      #messages li {
+        padding: 0.5rem 1rem;
+        background-color: #efefef;
+        margin: 10px;
+        border-radius: 10px;
+      }
+
+      #form {
+        display: flex;
+        margin-top: 10px;
+      }
+
+      #input {
+        flex-grow: 1;
+        border: none;
+        padding: 0.5rem;
+        border-radius: 20px;
+      }
+
+      #input:focus {
+        outline: none;
+      }
+
+      #sendBtn {
+        border: none;
+        background-color: #333;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        margin-left: 10px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Chatroom</h1>
+      <ul id="messages"></ul>
+      <form id="form" action="">
+        <input id="input" autocomplete="off" />
+        <button id="sendBtn">Send</button>
+      </form>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const username = localStorage.getItem("username");
+      const socket = io();
+
+      socket.emit("join", username);
+
+      const form = document.getElementById("form");
+      const input = document.getElementById("input");
+      const messages = document.getElementById("messages");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const message = input.value.trim();
+        if (message) {
+          socket.emit("chat message", message);
+          input.value = "";
+        }
+      });
+
+      socket.on("chat message", (data) => {
+        const item = document.createElement("li");
+        item.textContent = `${data.username}: ${data.message}`;
+        messages.appendChild(item);
+      });
+    </script>
+  </body>
+</html>

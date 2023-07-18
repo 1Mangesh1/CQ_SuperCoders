@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chat Application</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Welcome to Chat Application</h1>
+      <form id="form">
+        <label for="name">Name:</label>
+        <input type="text" id="name" required />
+        <br />
+        <label for="nickname">Nickname:</label>
+        <input type="text" id="nickname" required />
+        <br />
+        <input type="radio" id="chatroom" name="chatType" value="chatroom" required />
+        <label for="chatroom">Chatroom</label>
+        <input type="radio" id="private" name="chatType" value="private" required />
+        <label for="private">Private Chat</label>
+        <br />
+        <button type="submit">Start Chat</button>
+      </form>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>

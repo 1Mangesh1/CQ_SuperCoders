@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chat App</title>
+    <style>
+      body {
+        margin: 0;
+        padding-bottom: 3rem;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+      }
+
+      .container {
+        width: 400px;
+        margin: 100px auto;
+        text-align: center;
+      }
+
+      .input-container {
+        margin: 10px 0;
+      }
+
+      #chatroomBtn,
+      #privateChatBtn {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Chat App</h1>
+      <div class="input-container">
+        <label for="name">Name:</label>
+        <input type="text" id="name" />
+      </div>
+      <div class="input-container">
+        <label for="username">Username:</label>
+        <input type="text" id="username" />
+      </div>
+      <button onclick="joinChat()">Join Chat</button>
+      <button id="chatroomBtn" onclick="joinChatroom()">Chatroom</button>
+      <button id="privateChatBtn" onclick="joinPrivateChat()">Private Chat</button>
+    </div>
+
+    <script>
+      function joinChat() {
+        const name = document.getElementById("name").value;
+        const username = document.getElementById("username").value;
+        if (name && username) {
+          localStorage.setItem("name", name);
+          localStorage.setItem("username", username);
+
+          document.getElementById("chatroomBtn").style.display = "inline";
+          document.getElementById("privateChatBtn").style.display = "inline";
+        } else {
+          alert("Please enter your name and username.");
+        }
+      }
+
+      function joinChatroom() {
+        window.location.href = "/chatroom";
+      }
+
+      function joinPrivateChat() {
+        const friend = prompt("Enter friend's username:");
+        if (friend) {
+          localStorage.setItem("friend", friend);
+          window.location.href = "/private";
+        }
+      }
+    </script>
+  </body>
+</html>

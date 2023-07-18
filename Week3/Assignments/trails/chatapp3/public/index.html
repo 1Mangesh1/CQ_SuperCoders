@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chat App - Home</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+      }
+
+      #container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      #form {
+        background: #fff;
+        padding: 1rem;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      #form h2 {
+        margin: 0;
+        margin-bottom: 1rem;
+      }
+
+      #form label {
+        display: block;
+        margin-bottom: 0.5rem;
+      }
+
+      #form input[type="text"] {
+        width: 100%;
+        padding: 0.5rem;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      #form button {
+        display: block;
+        margin-top: 1rem;
+        padding: 0.5rem 1rem;
+        font-size: 16px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+
+      #form button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <form id="form">
+        <h2>Enter Your Name and Username</h2>
+        <label for="name">Name:</label>
+        <input type="text" id="name" required />
+        <label for="username">Username:</label>
+        <input type="text" id="username" required />
+        <button type="submit">Enter Chat</button>
+      </form>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const form = document.getElementById("form");
+      const nameInput = document.getElementById("name");
+      const usernameInput = document.getElementById("username");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const name = nameInput.value.trim();
+        const username = usernameInput.value.trim();
+        if (name && username) {
+          window.location.href = `/chat?name=${name}&username=${username}`;
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Private Chat</title>
+    <style>
+      body {
+        margin: 0;
+        padding-bottom: 3rem;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+      }
+
+      h1 {
+        text-align: center;
+        margin-top: 50px;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 30px;
+      }
+
+      label,
+      input {
+        margin-bottom: 10px;
+      }
+
+      #privateMessages {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      #privateMessages > li {
+        padding: 0.5rem 1rem;
+      }
+
+      #privateMessages > li:nth-child(odd) {
+        background: #efefef;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Private Chat</h1>
+    <ul id="privateMessages"></ul>
+    <form id="privateForm">
+      <input id="privateInput" autocomplete="off" /><button>Send</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      const privateMessages = document.getElementById("privateMessages");
+      const privateForm = document.getElementById("privateForm");
+      const privateInput = document.getElementById("privateInput");
+      const recipientInput = document.getElementById("recipient");
+
+      privateForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const recipient = recipientInput.value;
+        const msg = privateInput.value;
+        if (recipient && msg) {
+          socket.emit("privateMessage", { recipient, message: msg });
+          privateInput.value = "";
+        }
+      });
+
+      socket.on("privateMessage", ({ sender, message }) => {
+        const item = document.createElement("li");
+        item.textContent = `${sender} (private): ${message}`;
+        privateMessages.appendChild(item);
+      });
+
+      socket.on("privateMessageError", ({ recipient, message }) => {
+        alert(`${message} Recipient: ${recipient}`);
+      });
+    </script>
+  </body>
+</html>

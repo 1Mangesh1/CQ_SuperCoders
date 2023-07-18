@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Private Chat</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Private Chat</h1>
+      <div id="privateMessages" class="chat-box"></div>
+      <form id="privateForm">
+        <input id="privateInput" autocomplete="off" /><button>Send</button>
+      </form>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="private.js"></script>
+  </body>
+</html>
