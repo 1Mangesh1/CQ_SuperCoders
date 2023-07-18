@@ -56,7 +56,7 @@ socketServer.on("connection", (socket) => {
     const { username } = users[socket.id];
     delete users[socket.id];
     console.log(`User ${username} with socket ID ${socket.id} disconnected.`);
-    socketServer.emit("userDisconnected", { username }); // Emit userDisconnected event to all clients
+    socketServer.emit("userDisconnected", { username }); 
   });
 });
 
