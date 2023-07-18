@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Socket.IO Chat</title>
+  <style>
+    body {
+      margin: 0;
+      padding-bottom: 3rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f6f6f6;
+      color: #333;
+    }
+  
+    #container {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+  
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+      color: #4285f4;
+    }
+  
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 30px;
+    }
+  
+    label,
+    input {
+      margin-bottom: 10px;
+    }
+  
+    #chatroom,
+    #privateChat {
+      display: none;
+      margin-top: 50px;
+      border: 1px solid #ccc;
+      padding: 15px;
+      background-color: #fff;
+      box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    }
+  
+    h2 {
+      margin-bottom: 10px;
+      text-align: center;
+      color: #4285f4;
+    }
+  
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+  
+    li {
+      padding: 0.5rem 1rem;
+      border-bottom: 1px solid #ddd;
+    }
+  
+    li:last-child {
+      border-bottom: none;
+    }
+  
+    li:nth-child(odd) {
+      background: #f0f0f0;
+    }
+  
+    #messages {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+  
+    .chat-input {
+      display: flex;
+      background-color: #f0f0f0;
+      border-radius: 4px;
+      padding: 5px;
+    }
+  
+    .chat-input input {
+      flex: 1;
+      padding: 5px;
+      margin-right: 5px;
+      border: none;
+      background: none;
+      color: #333;
+      outline: none;
+    }
+  
+    .chat-input button {
+      padding: 5px 10px;
+      background-color: #4285f4;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 4px;
+    }
+  
+    .chat-input button:hover {
+      background-color: #1a73e8;
+    }
+  
+    #joinForm button,
+    #privateForm button {
+      background-color: #4caf50;
+    }
+  
+    #joinForm button:hover,
+    #privateForm button:hover {
+      background-color: #45a049;
+    }
+  
+    #recipient {
+      width: 100%;
+    }
+  
+    /* Styles for the "typing now" message */
+    #typingNow {
+      color: #888;
+      font-style: italic;
+    }
+  
+    /* Styles for the "user connected" message */
+    .userConnectedMessage {
+      background-color: #5cb85c;
+      color: #fff;
+      text-align: center;
+    }
+  
+    /* Styles for the "user disconnected" message */
+    .userDisconnectedMessage {
+      background-color: #d9534f;
+      color: #fff;
+      text-align: center;
+    }
+  </style>
+  
+</head>
+<body>
+  <div id="container">
+    <h1>Welcome to Chat App</h1>
+    <form id="joinForm">
+      <label for="name">Name:</label>
+      <input type="text" id="name" required pattern="[^\s]*" />
+      <label for="username">Username:</label>
+      <input type="text" id="username" required pattern="[^\s]*" />
+      <button type="submit">Join Chat</button>
+    </form>
+
+    <div id="chatroom" style="display: none">
+      <h2>Chatroom</h2>
+      <ul id="messages"></ul>
+      <form id="form" class="chat-input">
+        <input id="input" autocomplete="off" placeholder="Type your message..." />
+        <button>Send</button>
+      </form>
+      <div id="typingNow"></div>
+    </div>
+
+    <div id="privateChat" style="display: none">
+      <h2>Private Chat</h2>
+      <form id="privateForm" class="chat-input">
+        <input id="recipient" type="text" placeholder="Recipient Username" />
+        <input id="privateInput" autocomplete="off" placeholder="Type your private message..." />
+        <button>Send</button>
+      </form>
+      <ul id="privateMessages"></ul>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
