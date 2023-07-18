@@ -9,12 +9,13 @@ const users = {};
 
 socketServer.on("connection", (socket) => {
   console.log("User connected:", socket.id);
-  socket.emit("user connected", socket.id); 
+  socket.emit("userConnected", { username: users[socket.id]?.username }); 
 
   socket.on("join", (userData) => {
     const { name, username } = userData;
     users[socket.id] = { name, username };
     console.log(`User ${username} with socket ID ${socket.id} joined.`);
+    socket.broadcast.emit("user connected", username); 
   });
 
   socket.on("chat message", (msg) => {
@@ -55,10 +56,9 @@ socketServer.on("connection", (socket) => {
     const { username } = users[socket.id];
     delete users[socket.id];
     console.log(`User ${username} with socket ID ${socket.id} disconnected.`);
-    io.emit("userDisconnected", username); // Emit userDisconnected event to all clients
+    socketServer.emit("userDisconnected", { username }); // Emit userDisconnected event to all clients
   });
 });
-
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/index2.html");
