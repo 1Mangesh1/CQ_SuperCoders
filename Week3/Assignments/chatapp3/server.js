@@ -1,24 +1,26 @@
 const express = require("express");
 const app = express();
-const http = require("http").Server(app);
-const io = require("socket.io")(http);
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
 
 const users = {};
 
 app.use(express.static(__dirname + "/public"));
 
 io.on("connection", (socket) => {
-    console.log("User connected:", socket.id);
-    socket.emit("userConnected", { username: users[socket.id]?.username });
-    
-    // When a user joins
-    socket.on("join", (userData) => {
-      const { name, username } = userData;
-      users[socket.id] = { name, username };
-      console.log(`User ${username} with socket ID ${socket.id} joined.`);
-      socket.broadcast.emit("userConnected", { username });
-      socket.emit("onlineUsers", Object.values(users).map((user) => user.username));
-    });
+  console.log("User connected:", socket.id);
+  socket.emit("userConnected", { username: users[socket.id]?.username });
+
+  // When a user joins
+  socket.on("join", (userData) => {
+    const { name, username } = userData;
+    users[socket.id] = { name, username };
+    console.log(`User ${username} with socket ID ${socket.id} joined.`);
+    socket.broadcast.emit("userConnected", { username });
+    io.emit("onlineUsers", Object.values(users).map((user) => user.username));
+  });
 
   socket.on("chatMessage", (msg) => {
     const { username } = users[socket.id];
@@ -65,11 +67,10 @@ io.on("connection", (socket) => {
     delete users[socket.id];
     console.log(`User ${username} with socket ID ${socket.id} disconnected.`);
     io.emit("userDisconnected", { username });
-    io.emit("onlineUsers", Object.values(users));
+    io.emit("onlineUsers", Object.values(users).map((user) => user.username));
   });
 });
 
-http.listen(3000, () => {
-    console.log("server on http://localhost:3000");
-    }
-);
+server.listen(3000, () => {
+  console.log("Server is running on http://localhost:3000");
+});

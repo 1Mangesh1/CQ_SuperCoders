@@ -1,7 +1,9 @@
 const socket = io();
 const joinForm = document.getElementById("joinForm");
+const container = document.getElementById("container");
 const chatroomDiv = document.getElementById("chatroom");
 const privateChatDiv = document.getElementById("privateChat");
+const userList = document.getElementById("userList");
 const messages = document.getElementById("messages");
 const privateMessages = document.getElementById("privateMessages");
 const form = document.getElementById("form");
@@ -13,6 +15,17 @@ const typingNowMessage = document.getElementById("typingNow");
 
 let username = "";
 let isTyping = false;
+let typingTimeout;
+let isDisconnected = false;
+
+function updateUserList(onlineUsers) {
+  userList.innerHTML = "";
+  onlineUsers.forEach((user) => {
+    const li = document.createElement("li");
+    li.textContent = user;
+    userList.appendChild(li);
+  });
+}
 
 function showUserConnectedMessage(username) {
   const userConnectedMessage = document.createElement("li");
@@ -21,6 +34,16 @@ function showUserConnectedMessage(username) {
   messages.appendChild(userConnectedMessage);
   setTimeout(() => {
     userConnectedMessage.remove();
+  }, 5000);
+}
+
+function showUserDisconnectedMessage(username) {
+  const userDisconnectedMessage = document.createElement("li");
+  userDisconnectedMessage.textContent = `${username} has left the chat`;
+  userDisconnectedMessage.classList.add("userDisconnectedMessage");
+  messages.appendChild(userDisconnectedMessage);
+  setTimeout(() => {
+    userDisconnectedMessage.remove();
   }, 5000);
 }
 
@@ -58,9 +81,10 @@ joinForm.addEventListener("submit", (e) => {
   username = document.getElementById("username").value.trim();
   socket.emit("join", { name, username });
 
+  joinForm.style.display = "none";
+  container.style.display = "flex";
   chatroomDiv.style.display = "block";
   privateChatDiv.style.display = "block";
-  joinForm.style.display = "none";
 });
 
 form.addEventListener("submit", (e) => {
@@ -69,6 +93,32 @@ form.addEventListener("submit", (e) => {
   if (msg) {
     sendMessage(msg);
     input.value = "";
+  }
+});
+
+recipientInput.addEventListener("input", () => {
+  const recipient = recipientInput.value.trim();
+  const onlineUsersOptions = userList.getElementsByTagName("li");
+  let isRecipientOnline = false;
+
+  for (let i = 0; i < onlineUsersOptions.length; i++) {
+    if (onlineUsersOptions[i].textContent === recipient) {
+      isRecipientOnline = true;
+      break;
+    }
+  }
+
+  if (isRecipientOnline) {
+    recipientInput.style.border = "2px solid #07e507";
+  } else {
+    recipientInput.style.border = "2px solid #d9534f";
+  }
+});
+
+userList.addEventListener("click", (e) => {
+  if (e.target && e.target.nodeName === "LI") {
+    const recipient = e.target.textContent;
+    recipientInput.value = recipient;
   }
 });
 
@@ -98,6 +148,17 @@ input.addEventListener("keyup", (e) => {
       sendMessage(msg);
       input.value = "";
     }
+  } else {
+    // Start typing again
+    if (isDisconnected) {
+      isDisconnected = false;
+      socket.emit("typing");
+    }
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => {
+      isTyping = false;
+      socket.emit("stoppedTyping");
+    }, 2000); // Adjust the delay here (in milliseconds)
   }
 });
 
@@ -105,8 +166,12 @@ socket.on("userConnected", ({ username }) => {
   showUserConnectedMessage(username);
 });
 
+socket.on("userDisconnected", ({ username }) => {
+  showUserDisconnectedMessage(username);
+});
+
 socket.on("onlineUsers", (onlineUsers) => {
-  console.log("Online Users:", onlineUsers);
+  updateUserList(onlineUsers);
 });
 
 socket.on("userTyping", (username) => {
@@ -129,13 +194,9 @@ socket.on("privateMessageError", ({ recipient, message }) => {
   alert(`${message} Recipient: ${recipient}`);
 });
 
-form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const msg = input.value.trim();
-    if (msg) {
-      sendMessage(msg);
-      input.value = "";
-    }
-  });
-
-  
+socket.on("disconnect", () => {
+  isTyping = true;
+  isDisconnected = true;
+  socket.emit("stoppedTyping");
+  hideUserTypingMessage();
+});
