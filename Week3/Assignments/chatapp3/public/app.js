@@ -59,20 +59,22 @@ function sendMessage(msg) {
   socket.emit("chatMessage", msg);
 }
 
-function sendPrivateMessage(recipient, message) {
-  socket.emit("privateMessage", { recipient, message });
-}
-
 function addChatMessage(username, message) {
   const item = document.createElement("li");
   item.textContent = `${username}: ${message}`;
   messages.appendChild(item);
+  scrollToBottom(messages);
 }
 
-function addPrivateMessage(sender, message) {
+function addPrivateMessage(sender, message, recipient) {
   const item = document.createElement("li");
-  item.textContent = `${sender} (private): ${message}`;
+  item.textContent = `${sender} privately to ${recipient}: ${message}`;
   privateMessages.appendChild(item);
+  scrollToBottom(privateMessages);
+}
+
+function scrollToBottom(element) {
+  element.scrollTop = element.scrollHeight;
 }
 
 joinForm.addEventListener("submit", (e) => {
@@ -119,6 +121,7 @@ userList.addEventListener("click", (e) => {
   if (e.target && e.target.nodeName === "LI") {
     const recipient = e.target.textContent;
     recipientInput.value = recipient;
+    recipientInput.disabled = true; // Disable the recipient input
   }
 });
 
@@ -129,8 +132,13 @@ privateForm.addEventListener("submit", (e) => {
   if (recipient && msg) {
     sendPrivateMessage(recipient, msg);
     privateInput.value = "";
+    recipientInput.disabled = false; // Re-enable the recipient input
   }
 });
+
+function sendPrivateMessage(recipient, message) {
+  socket.emit("privateMessage", { recipient, message, sender: username });
+}
 
 input.addEventListener("input", () => {
   if (!isTyping) {
@@ -186,8 +194,8 @@ socket.on("chatMessage", ({ username, message }) => {
   addChatMessage(username, message);
 });
 
-socket.on("privateMessage", ({ sender, message }) => {
-  addPrivateMessage(sender, message);
+socket.on("privateMessage", ({ sender, message, recipient }) => {
+  addPrivateMessage(sender, message, recipient);
 });
 
 socket.on("privateMessageError", ({ recipient, message }) => {
@@ -200,3 +208,9 @@ socket.on("disconnect", () => {
   socket.emit("stoppedTyping");
   hideUserTypingMessage();
 });
+
+socket.on("refresh", () => {
+  //send to homepage
+  window.location.href = "/";
+}
+);
