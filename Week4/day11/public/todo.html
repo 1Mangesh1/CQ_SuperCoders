@@ -28,6 +28,7 @@
             h1 {
                 font-size: 36px;
                 margin-top: 50px;
+                text-align: center;
             }
             p {
                 font-size: 18px;
@@ -35,15 +36,22 @@
                 margin-top: 20px;
             }
             .todo-item mangesh{
-                display: block;
-                align-items: center;
-                justify-content: space-between;
-                padding: 20px;
-                margin-top: 10px;
-                background-color: #fff;
-                border-radius: 5px;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            }
+            display: block;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            
+            margin-top: 10px;
+            margin-bottom: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+        border: 2px solid #333;
+            box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+            
+            text-align: center;
+            width: 70%;
+            margin: 0 auto; 
+        }
             .todo-item-text {
                 font-size: 18px;
             }
@@ -52,7 +60,42 @@
                 font-weight: bold;
                 text-transform: uppercase;
             }
+          button{
+                margin-left: 10px;
+                padding: 10px;
+                background-color: #333;
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                align-items: center;
+          }
             
+          input{
+            margin-left: 10px;
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            align-items: center;
+          }
+          select{
+            margin-left: 10px;
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            align-items: center;
+          }
+          #inputdiv {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px; 
+        }
         </style>
     </head>
     <body>
@@ -65,7 +108,7 @@
             </ul>
         </nav>
         <h1>Welcome Todo !</h1>
-        <div>
+        <div id="inputdiv">
             <input placeholder="insert to do.." id="todoInput" />
             <select id="priority">
                 <option value="Low">Low</option>

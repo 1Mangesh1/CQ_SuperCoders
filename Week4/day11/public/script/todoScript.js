@@ -39,7 +39,7 @@ fetch("/todo",{
 function showTodoToUI(todo) 
 {
     const todoText = document.createElement("mangesh");
-    todoText.innerText = "Todo : "+ todo.inp + " || Priority : " + todo.pri;
+    todoText.innerText = "Todo : "+ todo.inp + " || Priority : " + todo.pri ;
     todoList.appendChild(todoText);
 }
 
