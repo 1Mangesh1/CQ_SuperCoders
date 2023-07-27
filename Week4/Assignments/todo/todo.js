@@ -57,6 +57,14 @@ app.delete("/todo", function (req, res) {
   deleteTodoFromList(req, res);
 });
 
+app.get("/file", function (req, res) {
+  
+  const file = fs.readFileSync("./new.mp4", "utf-8");
+
+  res.send(file);
+});
+
+
 app.listen(3000, () => {
   console.log("server started at http://localhost:3000");
 });
