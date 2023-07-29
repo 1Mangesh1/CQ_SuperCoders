@@ -1,90 +1,78 @@
-<h1 id="hed">Register</h1>
-<form action="/register" method="post" >
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required>
-    
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required>
-    <br>
-   
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
-    <br>
-
-    <input type="submit" value="Register">
-    <a href="/login">Login here</a>
-</form>
-
-<style>
-    body {
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Register</title>
+    <style>
+      body {
         background-color: #f2f2f2;
         font-family: Arial, sans-serif;
-
-    }
-    h1 {
+      }
+      h1 {
         text-align: center;
         color: #333;
-    }
-    form {
+      }
+      form {
         background-color: #fff;
         border-radius: 5px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         padding: 20px;
         width: 300px;
         margin: 0 auto;
-    }
-    label {
+      }
+      label {
         display: block;
         margin-bottom: 10px;
         color: #666;
-    }
-    input[type="text"],
-    input[type="password"] {
-        width: 80%;
+      }
+      input[type="text"],
+      input[type="email"],
+      input[type="password"] {
+        width: 95%;
         padding: 10px;
         border-radius: 3px;
         border: 1px solid #ccc;
         margin-bottom: 20px;
         font-size: 16px;
-    }
-    input[type="submit"] {
-        background-color: #4CAF50;
+      }
+      input[type="submit"] {
+        background-color: #4caf50;
         color: #fff;
         border: none;
         padding: 10px 20px;
         border-radius: 3px;
         font-size: 16px;
         cursor: pointer;
-    }
-    input[type="submit"]:hover {
+      }
+      input[type="submit"]:hover {
         background-color: #3e8e41;
-    }
-    button {
-        background-color: #4CAF50;
+      }
+      button {
+        background-color: #4caf50;
         color: #fff;
         border: none;
         padding: 10px 20px;
         border-radius: 3px;
         font-size: 16px;
         cursor: pointer;
-    }
-</style>
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="hedr">Register</h1>
+    <form action="/register" method="post">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required />
 
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required />
 
-<script>
-const headerr= document.getElementById("hed");
-  const url= new URLSearchParams(window.location.search);
-  const alert= url.get('alert');
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required />
 
-  if (alert === 'failed') {
-    
-    headerr.style.color = "red";
-    headerr.innerHTML = "Email already exists try again with different email..";
+      <input type="submit" value="Register" />
+      <a href="/login">Login here</a>
+    </form>
+  </body>
+</html>
 
-setTimeout(() => {
-    headerr.style.color = "black";
-    headerr.innerHTML = "Register";
-}, 3000);
-  }
-
-</script>
+<script src="script/basic.js"></script>

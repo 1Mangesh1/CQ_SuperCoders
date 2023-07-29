@@ -31,9 +31,11 @@ addBtn.addEventListener("click", () => {
     if (response.status === 200) {
       // Display todo to UI
       showTodoToUI(todo);
+    } else if (response.status === 401) {
+      alert("Please Login First");
+      window.location.href = "/login";
     } else {
       alert("Something went wrong");
-      
     }
   });
 });
@@ -156,9 +158,28 @@ function updateStatusText(checked, todoDiv) {
   }
 
   const statusLabel = document.createElement("label");
-  
+
   statusLabel.classList.add("status-label");
   statusLabel.style.textDecoration = checked ? "line-through" : "none";
   statusLabel.innerText = checked ? "Completed" : "Pending";
   todoDiv.appendChild(statusLabel);
 }
+
+
+fetch(("/username")
+,{
+    method: "get",
+    headers: {
+      "Content-Type": "text/plain",
+    },
+  }).then(function (response) {
+    if (response.status === 200) {
+      return response.text();
+    } else {
+      alert("Something went wrong");
+    }
+  }
+  ).then(function (username) {
+    document.getElementById("username").innerText = username;
+  }
+  );

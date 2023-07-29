@@ -2,58 +2,63 @@
 
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>To Do app</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                background-color: #f2f2f2;
-            }
-            nav {
-                background-color: #333;
-                color: #fff;
-                padding: 10px;
-            }
-            nav ul {
-                list-style: none;
-                margin: 0;
-                padding: 0;
-            }
-            nav li {
-                display: inline-block;
-                margin-right: 20px;
-            }
-            nav a {
-                color: #fff;
-                text-decoration: none;
-            }
-            h1 {
-                font-size: 36px;
-                margin-top: 50px;
-            }
-            p {
-                font-size: 18px;
-                line-height: 1.5;
-                margin-top: 20px;
-            }
-        </style>
-    </head>
-    <body>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/todo">Todo</a></li>
-                <li><a href="/about">About</a></li>
-                <li><a href="/contact">Contact</a></li>
-            </ul>
-        </nav>
-        <h1>Welcome to To Do app!</h1>
-        <p>Here you can find information about me and my work.</p>
-        <h2>Contact Information</h2>
-        <ul>
-            <li>Email: example@example.com</li>
-            <li>Phone: 555-555-5555</li>
-            <li>Address: 123 Main St, Anytown USA</li>
-        </ul>
-    </body>
+  <head>
+    <title>To Do app</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+      }
+      nav {
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+      }
+      nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      nav li {
+        display: inline-block;
+        margin-right: 20px;
+      }
+      nav a {
+        color: #fff;
+        text-decoration: none;
+      }
+      h1 {
+        font-size: 36px;
+        margin-top: 50px;
+      }
+      p {
+        font-size: 18px;
+        line-height: 1.5;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/todo">Todo</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+        <li id="username" style="position: absolute; right: 80px"></li>
+        <li style="position: absolute; right: 20px">
+          <a href="/logout">Logout</a>
+        </li>
+      </ul>
+    </nav>
+    <h1>Welcome to To Do app!</h1>
+    <p>Here you can find information about me and my work.</p>
+    <h2>Contact Information</h2>
+    <ul>
+      <li>Email: example@example.com</li>
+      <li>Phone: 555-555-5555</li>
+      <li>Address: 123 Main St, Anytown USA</li>
+    </ul>
+  </body>
 </html>
+<script src="script/basic.js"></script>

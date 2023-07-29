@@ -26,7 +26,7 @@
       }
       input[type="text"],
       input[type="password"] {
-        width: 100%;
+        width: 95%;
         padding: 10px;
         border-radius: 3px;
         border: 1px solid #ccc;
@@ -57,7 +57,7 @@
     </style>
   </head>
   <body>
-    <h1 id="hed">Login</h1>
+    <h1 id="hedl">Login</h1>
     <form action="/login" method="post">
       <label for="username">Username</label>
       <input type="text" id="username" name="username" required />
@@ -70,18 +70,5 @@
     </form>
   </body>
 </html>
-<script>
-  const headerr = document.getElementById("hed");
-  const url = new URLSearchParams(window.location.search);
-  const alert = url.get("alert");
 
-  if (alert === "failed") {
-    headerr.style.color = "red";
-    headerr.innerHTML = "your email or password is incorrect, please try again";
-
-    setTimeout(() => {
-      headerr.style.color = "black";
-      headerr.innerHTML = "Login";
-    }, 3000);
-  }
-</script>
+<script src="script/basic.js"></script>

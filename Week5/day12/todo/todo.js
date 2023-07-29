@@ -13,6 +13,7 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
 
 app.get("/", (req, res) => {
   if (!req.session.isLoggedIn) {
@@ -54,7 +55,23 @@ app.get("/todoScript.js", (req, res) => {
   res.sendFile(__dirname + "/public/script/todoScript.js");
 });
 
+app.get("/basic.js", (req, res) => {
+  res.sendFile(__dirname + "/public/script/basic.js");
+});
+
+app.get("/username", (req, res) => {
+  if (!req.session.isLoggedIn) {
+    res.redirect("/login");
+    return;
+  }
+  res.send("Namaste, "+req.session.username);
+});
+
 app.post("/todo", function (req, res) {
+  if (!req.session.isLoggedIn) {
+  res.status(401).send("Unauthorized");
+    return;
+  }
   console.log(req.body);
   saveTodoInFile(req.body, function (err) {
     if (err) {
@@ -87,6 +104,10 @@ app.delete("/todo", function (req, res) {
 });
 
 app.get("/file", function (req, res) {
+  if (!req.session.isLoggedIn) {
+    res.redirect("/login");
+    return;
+  }
   const file = fs.readFileSync("./new.mp4", "utf-8");
 
   res.send(file);
@@ -99,6 +120,7 @@ app.get("/login", (req, res) => {
 app.post("/login", (req, res) => {
   username = req.body.username;
   password = req.body.password;
+  req.session.username = username;
   console.log(req.body);
 
   validateLogin(username, password, function (err, data) {
@@ -126,6 +148,7 @@ app.post("/login", (req, res) => {
 app.get("/register", (req, res) => {
   res.sendFile(__dirname + "/public/register.html");
 });
+
 
 app.post("/register", (req, res) => {
   console.log(req.body);
@@ -155,6 +178,11 @@ app.post("/register", (req, res) => {
     res.status(200);
     res.redirect("/login");
   });
+});
+
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.redirect("/login");
 });
 
 app.listen(3000, () => {
