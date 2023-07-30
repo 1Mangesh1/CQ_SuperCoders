@@ -73,11 +73,16 @@ app.get("/tododata", function (req, res) {
   });
 });
 
-app.get("/basic.js", (req, res) => {
-  
+app.get("/script/basic.js", (req, res) => {
   res.setHeader("Content-Type", "application/javascript");
   res.sendFile(__dirname + "/public/script/basic.js");
 });
+
+app.get("/script/failure.js", (req, res) => {
+  res.setHeader("Content-Type", "application/javascript");
+  res.sendFile(__dirname + "/public/script/failure.js");
+});
+
 
 app.put("/todo", function (req, res) {
   console.log(req.body);
@@ -151,7 +156,7 @@ app.post("/register", (req, res) => {
       res.status(500);
       res.send("Internal Server Error");
       return;
-    } else if ((null, msg === "Email already exists")) {
+    } else if ((null, msg === "Email or username already exists")) {
       res.status(401);
       res.redirect("/register?alert=failed");
       return;
@@ -301,10 +306,10 @@ function saveUserInFile(user, callback) {
     try {
       data = JSON.parse(data);
       const existingUser = data.find(function (existingUser) {
-        return existingUser.email === user.email;
+        return existingUser.email === user.email || existingUser.username === user.username;
       });
       if (existingUser) {
-        callback(null, "Email already exists");
+        callback(null, "Email or username already exists");
         return;
       }
       data.push(user);

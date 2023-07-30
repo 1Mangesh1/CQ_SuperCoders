@@ -14,7 +14,7 @@ if (alert === "failed") {
     }, 3000);
   } else {
     headerr.style.color = "red";
-    headerr.innerHTML = "email already exists, please try again";
+    headerr.innerHTML = "email or username already exists, please try again with different email or username";
 
     setTimeout(() => {
       headerr.style.color = "black";
@@ -22,22 +22,3 @@ if (alert === "failed") {
     }, 3000);
   }
 }
-
-fetch("/username", {
-  method: "get",
-  headers: {
-    "Content-Type": "text/plain",
-  },
-})
-  .then(function (response) {
-    if (response.status === 200) {
-      return response.text();
-    } else {
-      alert("Something went wrong");
-    }
-  })
-  .then(function (username) {
-    const uname = document.getElementById("username");
-    uname.style.color = "red";
-    uname.innerText = username;
-  });
