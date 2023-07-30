@@ -16,7 +16,10 @@ app.use(express.urlencoded({ extended: true }));
 // app.use(express.static("public"));
 
 app.get("/", (req, res) => {
-  validateUser(req, res);
+ if(!req.session.isLoggedIn){
+    res.redirect("/login");
+    return;
+  }
   res.sendFile(__dirname + "/public/index.html");
 });
 
