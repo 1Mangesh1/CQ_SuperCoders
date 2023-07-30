@@ -19,9 +19,10 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
   if (!req.session.isLoggedIn) {
     res.redirect("/login");
+  
     return;
-  }
-  res.sendFile(__dirname + "/public/index.html");
+  }else{  res.sendFile(__dirname + "/public/index.html");}
+  
 });
 
 app.get("/about", (req, res) => {
