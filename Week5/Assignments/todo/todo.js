@@ -40,10 +40,7 @@ app.get("/todoScript.js", (req, res) => {
   res.sendFile(__dirname + "/public/script/todoScript.js");
 });
 
-app.get("/basic.js", (req, res) => {
-  validateUser(req, res);
-  res.sendFile(__dirname + "/public/script/basic.js");
-});
+
 
 app.get("/username", (req, res) => {
   validateUser(req, res);
@@ -77,6 +74,7 @@ app.get("/tododata", function (req, res) {
 });
 
 app.get("/basic.js", (req, res) => {
+  validateUser(req, res);
   res.setHeader("Content-Type", "application/javascript");
   res.sendFile(__dirname + "/public/script/basic.js");
 });
