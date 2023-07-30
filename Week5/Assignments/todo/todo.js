@@ -13,7 +13,8 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
+// app.use(express.static("public"));
+
 
 app.get("/", (req, res) => {
   if (!req.session.isLoggedIn) {
@@ -91,6 +92,10 @@ app.get("/tododata", function (req, res) {
     // res.status(200).send(json.stringify(data));
     res.status(200).json(data);
   });
+});
+
+app.get("/basic.js", (req, res) => {
+  res.sendFile(__dirname + "/public/script/basic.js");
 });
 
 app.put("/todo", function (req, res) {

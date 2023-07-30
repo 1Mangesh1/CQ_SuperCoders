@@ -41,6 +41,5 @@ fetch("/username", {
   .then(function (username) {
     const uname = document.getElementById("username");
     uname.style.color = "red";
-
     uname.innerText = username;
   });
