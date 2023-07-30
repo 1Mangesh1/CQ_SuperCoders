@@ -74,7 +74,7 @@ app.get("/tododata", function (req, res) {
 });
 
 app.get("/basic.js", (req, res) => {
-  validateUser(req, res);
+  
   res.setHeader("Content-Type", "application/javascript");
   res.sendFile(__dirname + "/public/script/basic.js");
 });
