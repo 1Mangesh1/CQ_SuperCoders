@@ -15,62 +15,44 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // app.use(express.static("public"));
 
-
 app.get("/", (req, res) => {
-  if (!req.session.isLoggedIn) {
-    res.redirect("/login");
-    return;
-  }
+  validateUser(req, res);
   res.sendFile(__dirname + "/public/index.html");
 });
 
 app.get("/about", (req, res) => {
-  if (!req.session.isLoggedIn) {
-    res.redirect("/login");
-    return;
-  }
+  validateUser(req, res);
   res.sendFile(__dirname + "/public/about.html");
 });
 
 app.get("/contact", (req, res) => {
-  if (!req.session.isLoggedIn) {
-    res.redirect("/login");
-    return;
-  }
+  validateUser(req, res);
   res.sendFile(__dirname + "/public/contact.html");
 });
 
 app.get("/todo", (req, res) => {
-  if (!req.session.isLoggedIn) {
-    res.redirect("/login");
-    return;
-  }
+  validateUser(req, res);
   res.sendFile(__dirname + "/public/todo.html");
 });
 
 app.get("/todoScript.js", (req, res) => {
-  if (!req.session.isLoggedIn) {
-    res.redirect("/login");
-    return;
-  }
+  validateUser(req, res);
   res.sendFile(__dirname + "/public/script/todoScript.js");
 });
 
 app.get("/basic.js", (req, res) => {
+  validateUser(req, res);
   res.sendFile(__dirname + "/public/script/basic.js");
 });
 
 app.get("/username", (req, res) => {
-  if (!req.session.isLoggedIn) {
-    res.redirect("/login");
-    return;
-  }
-  res.send("Namaste, "+req.session.username);
+  validateUser(req, res);
+  res.send("Namaste, " + req.session.username);
 });
 
 app.post("/todo", function (req, res) {
   if (!req.session.isLoggedIn) {
-  res.status(401).send("Unauthorized");
+    res.status(401).send("Unauthorized");
     return;
   }
   console.log(req.body);
@@ -95,6 +77,7 @@ app.get("/tododata", function (req, res) {
 });
 
 app.get("/basic.js", (req, res) => {
+  res.setHeader("Content-Type", "application/javascript");
   res.sendFile(__dirname + "/public/script/basic.js");
 });
 
@@ -109,10 +92,7 @@ app.delete("/todo", function (req, res) {
 });
 
 app.get("/file", function (req, res) {
-  if (!req.session.isLoggedIn) {
-    res.redirect("/login");
-    return;
-  }
+  validateUser(req, res);
   const file = fs.readFileSync("./new.mp4", "utf-8");
 
   res.send(file);
@@ -153,7 +133,6 @@ app.post("/login", (req, res) => {
 app.get("/register", (req, res) => {
   res.sendFile(__dirname + "/public/register.html");
 });
-
 
 app.post("/register", (req, res) => {
   console.log(req.body);
@@ -367,4 +346,11 @@ function validateLogin(username, password, callback) {
       callback(error);
     }
   });
+}
+
+function validateUser(req, res) {
+  if (!req.session.isLoggedIn) {
+    res.redirect("/login");
+    return;
+  }
 }
