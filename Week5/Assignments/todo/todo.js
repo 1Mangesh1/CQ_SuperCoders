@@ -16,7 +16,10 @@ app.use(express.urlencoded({ extended: true }));
 // app.use(express.static("public"));
 
 app.get("/", (req, res) => {
-  validateUser(req, res);
+ if(!req.session.isLoggedIn){
+    res.redirect("/login");
+    return;
+  }
   res.sendFile(__dirname + "/public/index.html");
 });
 
@@ -74,12 +77,12 @@ app.get("/tododata", function (req, res) {
 });
 
 app.get("/script/basic.js", (req, res) => {
-  res.setHeader("Content-Type", "application/javascript");
+ // res.setHeader("Content-Type", "application/javascript");
   res.sendFile(__dirname + "/public/script/basic.js");
 });
 
 app.get("/script/failure.js", (req, res) => {
-  res.setHeader("Content-Type", "application/javascript");
+  //res.setHeader("Content-Type", "application/javascript");
   res.sendFile(__dirname + "/public/script/failure.js");
 });
 
@@ -353,7 +356,7 @@ function validateLogin(username, password, callback) {
 
 function validateUser(req, res) {
   if (!req.session.isLoggedIn) {
-    res.redirect("/login");
-    return;
+    
+    return res.redirect("/login");;
   }
 }
