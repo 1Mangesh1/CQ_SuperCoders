@@ -3,7 +3,6 @@ const app = express();
 const fs = require("fs");
 const session = require("express-session");
 
-
 app.use(
   session({
     secret: "somesecret",
@@ -18,37 +17,63 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // app.use(express.static("public"));
 
-app.get("/", (req, res) => {
-  validateUser(req, res);
-  res.sendFile(__dirname + "/public/index.html");
+app.get("/", validateUser,(req, res) => {
+  
+  readData(function (err, data) {
+    if (err) {
+      res.status(500).send("Internal Server Error");
+      return;
+    }
+
+  res.render("index", { user: "Namaste, " + req.session.username , data: data});
+
+
+});
 });
 
-app.get("/about", (req, res) => {
-  validateUser(req, res);
-  res.sendFile(__dirname + "/public/about.html");
+app.get("/about",validateUser, (req, res) => {
+ 
+  readData(function (err, data) {
+    if (err) {
+      res.status(500).send("Internal Server Error");
+      return;
+    }
+  res.render("about", { user: "Namaste, " + req.session.username , data: data});
+  });
 });
 
-app.get("/contact", (req, res) => {
-  validateUser(req, res);
-  res.sendFile(__dirname + "/public/contact.html");
+app.get("/contact", validateUser,(req, res) => {
+
+  
+  readData(function (err, data) {
+    if (err) {
+      res.status(500).send("Internal Server Error");
+      return;
+    }
+  res.render("contact", { user: "Namaste, " + req.session.username , data: data});
+
 });
 
-app.get("/todo", (req, res) => {
-  validateUser(req, res);
-  res.sendFile(__dirname + "/public/todo.html");
 });
 
-app.get("/todoScript.js", (req, res) => {
-  validateUser(req, res);
+app.get("/todo",validateUser, (req, res) => {
+  
+  readData(function (err, data) {
+    if (err) {
+      res.status(500).send("Internal Server Error");
+      return;
+    }
+
+  res.render("todo", { user: "Namaste, " + req.session.username , data: data});
+  });
+});
+
+app.get("/todoScript.js", validateUser,(req, res) => {
+ 
   res.sendFile(__dirname + "/public/script/todoScript.js");
 });
 
 
-
-app.get("/username", (req, res) => {
-  validateUser(req, res);
-  res.send("Namaste, " + req.session.username);
-});
 
 app.post("/todo", function (req, res) {
   if (!req.session.isLoggedIn) {
@@ -81,8 +106,6 @@ app.get("/script/basic.js", (req, res) => {
   res.sendFile(__dirname + "/public/script/basic.js");
 });
 
-
-
 app.put("/todo", function (req, res) {
   console.log(req.body);
   statusUpdate(req, res);
@@ -93,8 +116,8 @@ app.delete("/todo", function (req, res) {
   deleteTodoFromList(req, res);
 });
 
-app.get("/file", function (req, res) {
-  validateUser(req, res);
+app.get("/file", validateUser,function (req, res) {
+
   const file = fs.readFileSync("./new.mp4", "utf-8");
 
   res.send(file);
@@ -104,12 +127,14 @@ app.get("/login", (req, res) => {
   res.render("login", { error: "" });
 });
 
-app.get("/invalidregister", (req, res) => {
-  res.render("invalidregister");
-});
-app.get("/invalidlogin", (req, res) => {
-  res.render("invalidlogin");
-});
+// app.get("/invalidregister", (req, res) => {
+//   res.render("invalidregister");
+// });
+// app.get("/invalidlogin", (req, res) => {
+//   res.render("invalidlogin");
+// });
+
+
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
@@ -145,7 +170,7 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  res.sendFile(__dirname + "/public/register.html");
+  res.render("register", { error: "" });
 });
 
 app.post("/register", (req, res) => {
@@ -169,7 +194,7 @@ app.post("/register", (req, res) => {
       return;
     } else if ((null, msg === "Email or username already exists")) {
       res.status(401);
-      res.redirect("invalidregister");
+      res.render("register", { error: "Email or username already exists" });
       return;
     }
 
@@ -177,8 +202,6 @@ app.post("/register", (req, res) => {
     res.redirect("/login");
   });
 });
-
-
 
 app.listen(3000, () => {
   console.log("server started at http://localhost:3000");
@@ -268,40 +291,6 @@ function deleteTodoFromList(req, res) {
   });
 }
 
-// function saveUserInFile(user,callback) {
-//   fs.readFile("./users.json", "utf-8", function (err, data) {
-//     if (err) {
-//       callback(err);
-//       return;
-//     }
-//     if (data === "") {
-//       data = "[]";
-//     }
-//     try {
-
-//       data = JSON.parse(data);
-//       const existingUser = data.find(function (existingUser) {
-//         return existingUser.email === user.email;
-//       });
-//       if(existingUser)
-//       {
-//         callback("Email already exists");
-//         return;
-//       }
-//       data.push(user);
-//       fs.writeFile("./users.json", JSON.stringify(data), function (err) {
-//         if (err) {
-//           callback(err);
-//           return;
-//         }
-//         callback(null);
-//       });
-//     } catch (error) {
-//       callback(error);
-//     }
-//   });
-// }
-
 function saveUserInFile(user, callback) {
   fs.readFile("./users.json", "utf-8", function (err, data) {
     if (err) {
@@ -314,7 +303,10 @@ function saveUserInFile(user, callback) {
     try {
       data = JSON.parse(data);
       const existingUser = data.find(function (existingUser) {
-        return existingUser.email === user.email || existingUser.username === user.username;
+        return (
+          existingUser.email === user.email ||
+          existingUser.username === user.username
+        );
       });
       if (existingUser) {
         callback(null, "Email or username already exists");
@@ -359,9 +351,31 @@ function validateLogin(username, password, callback) {
   });
 }
 
-function validateUser(req, res) {
-  if (!req.session.isLoggedIn) {
-    res.render("login", { error: "Please login to view this page" });
-    return;
+function validateUser(req, res, next) {
+  if (req.session.isLoggedIn) {
+    next();
+  } else {
+    res.render("login", { error: "To view that page you must login first.." });
   }
+}
+
+
+
+
+function readData(callback) {
+  fs.readFile("./data.json", "utf-8", function (err, data) {
+    if (err) {
+      callback(err);
+      return;
+    }
+    if (data === "") {
+      data = "[]";
+    }
+    try {
+      data = JSON.parse(data);
+      callback(null, data);
+    } catch (error) {
+      callback(error);
+    }
+  });
 }
