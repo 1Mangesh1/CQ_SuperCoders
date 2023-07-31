@@ -69,11 +69,11 @@
       <a href="/register">Not Registered! Register Here</a>
     </form>
     <% if (error) { %>
-    <p id="error-message" style="color: red;text-align: center;"><%= error %></p>
+    <p id="error-message" style="color: red;text-align: center;font-size: 40px;"><%= error %></p>
     <script>
       setTimeout(function() {
         document.getElementById("error-message").style.display = "none";
-      }, 5000); // 5000 milliseconds = 5 seconds
+      }, 5000); 
     </script>
     <% } %>
 

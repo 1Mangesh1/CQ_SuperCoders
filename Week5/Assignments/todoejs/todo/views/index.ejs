@@ -43,21 +43,11 @@
     </style>
   </head>
   <body>
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/todo">Todo</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/contact">Contact</a></li>
-        <li id="username" style="position: absolute; right: 80px"></li>
+    
+<%- include("components/header",{user : user}) %>
 
-        <li style="position: absolute; right: 20px">
-          <a href="/logout">Logout</a>
-        </li>
-      </ul>
-    </nav>
     <h1>Welcome to my todo website!</h1>
 
-    <script src="script/basic.js"></script>
+    <%- include("components/data",{data : data}) %>
   </body>
 </html>
