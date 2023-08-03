@@ -51,6 +51,12 @@ addBtn.addEventListener("click", function (e) {
     .catch(function (error) {
       console.log(error.message);
     });
+
+    //clear form
+    todoInput.value = "";
+    priority.value = "";
+    todoimg.value = "";
+    
 });
 
 // Function to create and display a new Todo on the UI
