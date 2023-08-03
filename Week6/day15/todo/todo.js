@@ -18,96 +18,67 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // app.use(express.static("public"));
 
-// app.use(express.static("uploads/"));
-
-const profileImgStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    if (file.fieldname === "profileimg") {
-      cb(null, "profiles/");
-    }
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-
-const todoImgStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    if (file.fieldname === "todoimg") {
-      cb(null, "uploads/");
-    }
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-
-const uploadProfileImg = multer({ storage: profileImgStorage });
-const uploadTodoImg = multer({ storage: todoImgStorage });
-
-app.use(express.static("profiles/"));
 app.use(express.static("uploads/"));
-app.get("/", validateUser, (req, res) => {
+const upload = multer({ dest: "uploads/" });
+app.use(upload.single("todoimg"));
+
+app.get("/", validateUser,(req, res) => {
+  
   readData(function (err, data) {
     if (err) {
       res.status(500).send("Internal Server Error");
       return;
     }
 
-    res.render("index", {
-      user: "Namaste, " + req.session.username,
-      data: data,
-      pic: req.session.pic,
-    });
-  });
+  res.render("index", { user: "Namaste, " + req.session.username , data: data});
+
+
+});
 });
 
-app.get("/about", validateUser, (req, res) => {
+app.get("/about",validateUser, (req, res) => {
+ 
   readData(function (err, data) {
     if (err) {
       res.status(500).send("Internal Server Error");
       return;
     }
-    res.render("about", {
-      user: "Namaste, " + req.session.username,
-      data: data,
-      pic: req.session.pic,
-    });
+  res.render("about", { user: "Namaste, " + req.session.username , data: data});
   });
 });
 
-app.get("/contact", validateUser, (req, res) => {
+app.get("/contact", validateUser,(req, res) => {
+
+  
   readData(function (err, data) {
     if (err) {
       res.status(500).send("Internal Server Error");
       return;
     }
-    res.render("contact", {
-      user: "Namaste, " + req.session.username,
-      data: data,
-      pic: req.session.pic,
-    });
-  });
+  res.render("contact", { user: "Namaste, " + req.session.username , data: data});
+
 });
 
-app.get("/todo", validateUser, (req, res) => {
+});
+
+app.get("/todo",validateUser, (req, res) => {
+  
   readData(function (err, data) {
     if (err) {
       res.status(500).send("Internal Server Error");
       return;
     }
 
-    res.render("todo", {
-      user: "Namaste, " + req.session.username,
-      data: data,
-      pic: req.session.pic,
-    });
+  res.render("todo", { user: "Namaste, " + req.session.username , data: data});
   });
 });
 
-app.get("/todoScript.js", validateUser, (req, res) => {
+app.get("/todoScript.js", validateUser,(req, res) => {
+ 
   res.sendFile(__dirname + "/public/script/todoScript.js");
 });
+
+
 
 // app.post("/todo", function (req, res) {
 //   if (!req.session.isLoggedIn) {
@@ -124,7 +95,7 @@ app.get("/todoScript.js", validateUser, (req, res) => {
 //   });
 // });
 
-app.post("/todo", uploadTodoImg.single("todoimg"), (req, res) => {
+app.post("/todo", (req, res) => {
   const inp = req.body.inp;
   const pri = req.body.pri;
   const todoimg = req.file;
@@ -162,6 +133,8 @@ app.get("/tododata", function (req, res) {
   });
 });
 
+
+
 app.put("/todo", function (req, res) {
   console.log(req.body);
   statusUpdate(req, res);
@@ -172,7 +145,8 @@ app.delete("/todo", function (req, res) {
   deleteTodoFromList(req, res);
 });
 
-app.get("/file", validateUser, function (req, res) {
+app.get("/file", validateUser,function (req, res) {
+
   const file = fs.readFileSync("./new.mp4", "utf-8");
 
   res.send(file);
@@ -188,6 +162,8 @@ app.get("/login", (req, res) => {
 // app.get("/invalidlogin", (req, res) => {
 //   res.render("invalidlogin");
 // });
+
+
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
@@ -208,8 +184,6 @@ app.post("/login", (req, res) => {
     }
     if (data) {
       req.session.isLoggedIn = true;
-      req.session.pic = data.profileimg;
-      console.log(req.session.pic);
       res.status(200);
       res.redirect("/");
     } else {
@@ -228,21 +202,18 @@ app.get("/register", (req, res) => {
   res.render("register", { error: "" });
 });
 
-app.post("/register", uploadProfileImg.single("profileimg"), (req, res) => {
+app.post("/register", (req, res) => {
   console.log(req.body);
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
-  const profileimg = req.file;
 
   user = {
     username: username,
     password: password,
     email: email,
-    profileimg: profileimg.filename,
   };
   //save to db users.json
-  console.log(user);
 
   saveUserInFile(user, function (err, msg) {
     if (err) {
@@ -335,15 +306,6 @@ function deleteTodoFromList(req, res) {
       return todo.id === req.body.id;
     });
     if (todo) {
-      if (todo.todoimg) {
-        const imagePath = "./uploads/" + todo.todoimg;
-        fs.unlink(imagePath, function (err) {
-          if (err) {
-            console.error("Error deleting image:", err);
-          }
-        });
-      }
-
       data.splice(data.indexOf(todo), 1);
       fs.writeFile("./new.mp4", JSON.stringify(data), function (err) {
         if (err) {
@@ -408,7 +370,7 @@ function validateLogin(username, password, callback) {
         return user.username === username && user.password === password;
       });
       if (user) {
-        callback(null, user);
+        callback(null, true);
       } else {
         callback(null, false);
       }
@@ -425,6 +387,9 @@ function validateUser(req, res, next) {
     res.render("login", { error: "To view that page you must login first.." });
   }
 }
+
+
+
 
 function readData(callback) {
   fs.readFile("./data.json", "utf-8", function (err, data) {

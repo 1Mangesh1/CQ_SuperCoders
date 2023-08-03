@@ -4,45 +4,55 @@
     background-color: #f2f2f2;
   }
   nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #333;
+    background-color: #dd6161;
     color: #fff;
     padding: 10px;
-  }
-  .nav_left {
-    display: flex;
-    align-items: center;
-  }
-  .nav_right {
-    display: flex;
-    align-items: center;
-  }
-  .nav_right img {
-    width: 40px;
-    height: 40px;
-    border-radius: 25%;
-    margin-right: 10px;
-    border-style: solid;
-    border-color: #fff;
-  }
-  .nav_right #username {
-    color: #fff;
-    font-size: 18px;
-    margin-right: 20px;
-    background-color: none;
-    border-bottom: 1px solid white;
-    
   }
   nav ul {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex;
-    align-items: center;
   }
   nav li {
+    display: inline-block;
+    margin-right: 20px;
+  }
+  nav a {
+    color: #fff;
+    text-decoration: none;
+  }
+  h1 {
+    font-size: 36px;
+    margin-top: 50px;
+  }
+  p {
+    font-size: 18px;
+    line-height: 1.5;
+    margin-top: 20px;
+  }
+  #username {
+    color: #fff;
+    font-size: 18px;
+    margin-right: 20px;
+    background-color: black;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+  }
+  nav {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+  }
+  nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  nav li {
+    display: inline-block;
     margin-right: 20px;
   }
   nav a {
@@ -130,22 +140,26 @@
   .status-label {
     text-decoration: none;
   }
+  #username {
+    color: #fff;
+    font-size: 18px;
+    margin-right: 20px;
+    background-color: black;
+  }
 </style>
 
 <nav>
-  <div class="nav_left">
-    <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="/todo">Todo</a></li>
-      <li><a href="/about">About</a></li>
-      <li><a href="/contact">Contact</a></li>
-    </ul>
-  </div>
-  <div class="nav_right">
-    <img src="<%= pic %>" alt="propic" id="pica">
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/todo">Todo</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/contact">Contact</a></li>
     <% if (user) { %>
-      <span id="username"><%= user %> ji</span>
+
+    <li id="username" style="position: absolute; right: 80px"><%= user %></li>
     <% } %>
-    <a href="/logout">Logout</a>
-  </div>
+    <li style="position: absolute; right: 20px">
+      <a href="/logout">Logout</a>
+    </li>
+  </ul>
 </nav>
