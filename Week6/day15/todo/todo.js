@@ -130,8 +130,7 @@ app.post("/todo", uploadTodoImg.single("todoimg"), (req, res) => {
     todoimg: todoimg.filename,
   });
 
-  todo
-    .save()
+  todo.save()
     .then((data) => {
       res.status(200).json(data);
     })
@@ -157,37 +156,6 @@ app.put("/todo", function (req, res) {
       res.status(200).send("Success");
     })
     .catch(function (err) {
-      res.status(500).send("Internal Server Error");
-    });
-});
-
-app.put("/todoedit", uploadTodoImg.single("todoimg"), (req, res) => {
-  const id = req.body.id;
-  const inp = req.body.inp;
-  const pri = req.body.pri;
-  const todoimg = req.file;
-
-  if (!id || !inp || !pri) {
-    return res.status(400).send("Missing fields");
-  }
-
-  TodoModel.findById(id)
-    .then((todo) => {
-      todo.todoimg = todoimg.filename;
-      todo.inp = inp;
-      todo.pri = pri;
-      todo
-        .save()
-        .then(() => {
-          res.status(200).json(todo);
-        })
-        .catch((err) => {
-          console.error("Error saving todo:", err);
-          res.status(500).send("Internal Server Error");
-        });
-    })
-    .catch((err) => {
-      console.error("Error finding todo:", err);
       res.status(500).send("Internal Server Error");
     });
 });
@@ -261,8 +229,7 @@ app.post("/register", uploadProfileImg.single("profileimg"), (req, res) => {
     profileimg: profileimg.filename,
   });
 
-  user
-    .save()
+  user.save()
     .then(function (data) {
       console.log("User created");
       res.redirect("/login");
@@ -274,7 +241,6 @@ app.post("/register", uploadProfileImg.single("profileimg"), (req, res) => {
     });
 });
 
-// Database connection and server start
 db.init()
   .then(function () {
     console.log("db connected");

@@ -173,48 +173,48 @@ function updateStatusText(checked, todoDiv) {
   todoDiv.appendChild(statusLabel);
 }
 
-// function handleEditClick(todo, todoText, todoPrio, editBtn) {
-//   editBtn.addEventListener("click", function () {
-//     const newInp = prompt("Edit Todo:", todo.inp);
-//     const newPri = prompt("Edit Priority:", todo.pri);
+function handleEditClick(todo, todoText, todoPrio, editBtn) {
+  editBtn.addEventListener("click", function () {
+    const newInp = prompt("Edit Todo:", todo.inp);
+    const newPri = prompt("Edit Priority:", todo.pri);
 
-//     const input = document.createElement("input");
-//     input.type = "file";
-//     input.addEventListener("change", function () {
-//       const file = input.files[0];
-//       if (!newInp || !newPri || !file) {
-//         alert("Please fill in all fields");
-//         return;
-//       }
-//       const updatedTodo = new FormData();
-//       updatedTodo.append("id", todo.id);
-//       updatedTodo.append("inp", newInp);
-//       updatedTodo.append("pri", newPri);
-//       updatedTodo.append("todoimg", file);
-//       updatedTodo.append("done", todo.done);
+    const input = document.createElement("input");
+    input.type = "file";
+    input.addEventListener("change", function () {
+      const file = input.files[0];
+      if (!newInp || !newPri || !file) {
+        alert("Please fill in all fields");
+        return;
+      }
+      const updatedTodo = new FormData();
+      updatedTodo.append("id", todo.id);
+      updatedTodo.append("inp", newInp);
+      updatedTodo.append("pri", newPri);
+      updatedTodo.append("todoimg", file);
+      updatedTodo.append("done", todo.done);
 
-//       fetch("/todoedit", {
-//         method: "PUT",
-//         body: updatedTodo,
-//       })
-//         .then(function (response) {
-//           if (response.status === 200) {
-//             todoText.innerText = "Todo: " + newInp;
-//             todoPrio.innerText = "Priority: " + newPri;
-//             todoimg.src = URL.createObjectURL(file);
-//             // showTodoToUI(todo);
-//           } else {
-//             alert("Something went wrong");
-//           }
-//         })
-//         .catch(function (error) {
-//           console.log(error.message);
-//         });
-//     });
+      fetch("/todoedit", {
+        method: "PUT",
+        body: updatedTodo,
+      })
+        .then(function (response) {
+          if (response.status === 200) {
+            todoText.innerText = "Todo: " + newInp;
+            todoPrio.innerText = "Priority: " + newPri;
+            todoimg.src = URL.createObjectURL(file);
+            // showTodoToUI(todo);
+          } else {
+            alert("Something went wrong");
+          }
+        })
+        .catch(function (error) {
+          console.log(error.message);
+        });
+    });
 
-//     input.click();
-//   });
-// }
+    input.click();
+  });
+}
 
 fetch("/tododata")
   .then(function (response) {

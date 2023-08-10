@@ -1,10 +1,8 @@
-// Get references to the DOM elements
 const addBtn = document.getElementById("addBtn");
 const todoInput = document.getElementById("todoInput");
 const priority = document.getElementById("priority");
 const todoList = document.getElementById("todo-item");
 
-// Event listener for Add button
 addBtn.addEventListener("click", function (e) {
   e.preventDefault();
 
@@ -39,18 +37,17 @@ addBtn.addEventListener("click", function (e) {
     })
     .then(function (data) {
       showTodoToUI(data);
-      //refresh the page
+      
     })
     .catch(function (error) {
       console.log(error.message);
     });
 
-  // Clear form
+
   todoInput.value = "";
   priority.value = "";
 });
 
-// Function to create and display a new Todo on the UI
 function showTodoToUI(todo) {
   const todoText = document.createElement("mangesh");
   todoText.innerText = "Todo: " + todo.inp;
@@ -66,8 +63,8 @@ function showTodoToUI(todo) {
 
   const doneCheckbox = document.createElement("input");
   doneCheckbox.type = "checkbox";
-  doneCheckbox.id = "statusCheckbox-" + todo.id; // Assign a unique ID to each checkbox
-  doneCheckbox.checked = todo.done === "done"; // Set the initial checkbox state
+  doneCheckbox.id = "statusCheckbox-" + todo.id; 
+  doneCheckbox.checked = todo.done === "done"; 
 
   const delBtn = document.createElement("button");
   delBtn.innerText = "X";
@@ -88,14 +85,13 @@ function showTodoToUI(todo) {
   todoDiv.appendChild(document.createElement("br"));
   todoDiv.appendChild(doneCheckbox);
   todoDiv.appendChild(delBtn);
-  // todoDiv.appendChild(editBtn);
+  todoDiv.appendChild(editBtn);
 
-  // Create and append the status label for marking the task as completed
   updateStatusText(doneCheckbox.checked, todoDiv);
 
   handleCheckboxChange(todo, todoText, todoPrio, doneCheckbox, todoDiv);
   handleDeleteClick(todo, todoDiv, delBtn);
-  // handleEditClick(todo, todoText, todoPrio, editBtn);
+  handleEditClick(todo, todoText, todoPrio, editBtn);
 
   if (todo.done === "done") {
     todoText.style.textDecoration = "line-through";
@@ -105,7 +101,6 @@ function showTodoToUI(todo) {
   todoList.appendChild(todoDiv);
 }
 
-// Function to handle checkbox change for marking Todo as done/pending
 function handleCheckboxChange(todo, todoText, todoPrio, doneCheckbox, todoDiv) {
   doneCheckbox.addEventListener("change", function () {
     if (doneCheckbox.checked) {
@@ -118,9 +113,9 @@ function handleCheckboxChange(todo, todoText, todoPrio, doneCheckbox, todoDiv) {
       todo.done = "pending";
     }
 
-    // Update the existing todo on the server (if needed)
+    
     fetch("/todo", {
-      method: "PUT", // Use PUT or PATCH method to update existing todo
+      method: "PUT", 
       headers: {
         "Content-Type": "application/json",
       },
@@ -136,10 +131,10 @@ function handleCheckboxChange(todo, todoText, todoPrio, doneCheckbox, todoDiv) {
   });
 }
 
-// Function to handle Todo deletion
+// Todo deletion
 function handleDeleteClick(todo, todoDiv, delBtn) {
   delBtn.addEventListener("click", function () {
-    // Delete the existing todo on the server
+    
     fetch("/todo", {
       method: "DELETE",
       headers: {
@@ -173,48 +168,38 @@ function updateStatusText(checked, todoDiv) {
   todoDiv.appendChild(statusLabel);
 }
 
-// function handleEditClick(todo, todoText, todoPrio, editBtn) {
-//   editBtn.addEventListener("click", function () {
-//     const newInp = prompt("Edit Todo:", todo.inp);
-//     const newPri = prompt("Edit Priority:", todo.pri);
+function handleEditClick(todo, todoText, todoPrio, editBtn) {
+  editBtn.addEventListener("click", function () {
+    const newTodoText = prompt("Enter new todo text", todo.inp);
+    const newTodoPrio = prompt("Enter new todo priority", todo.pri);
 
-//     const input = document.createElement("input");
-//     input.type = "file";
-//     input.addEventListener("change", function () {
-//       const file = input.files[0];
-//       if (!newInp || !newPri || !file) {
-//         alert("Please fill in all fields");
-//         return;
-//       }
-//       const updatedTodo = new FormData();
-//       updatedTodo.append("id", todo.id);
-//       updatedTodo.append("inp", newInp);
-//       updatedTodo.append("pri", newPri);
-//       updatedTodo.append("todoimg", file);
-//       updatedTodo.append("done", todo.done);
+    if (!newTodoText || !newTodoPrio) {
+      alert("Please fill in the fields");
+      return;
+    }
 
-//       fetch("/todoedit", {
-//         method: "PUT",
-//         body: updatedTodo,
-//       })
-//         .then(function (response) {
-//           if (response.status === 200) {
-//             todoText.innerText = "Todo: " + newInp;
-//             todoPrio.innerText = "Priority: " + newPri;
-//             todoimg.src = URL.createObjectURL(file);
-//             // showTodoToUI(todo);
-//           } else {
-//             alert("Something went wrong");
-//           }
-//         })
-//         .catch(function (error) {
-//           console.log(error.message);
-//         });
-//     });
+    todo.inp = newTodoText;
+    todo.pri = newTodoPrio;
 
-//     input.click();
-//   });
-// }
+    fetch("/todo", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(todo),
+    }).then(function (response) {
+      if (response.status === 200) {
+        // Todo successfully updated on the server
+        todoText.innerText = "Todo: " + newTodoText;
+        todoPrio.innerText = "Priority: " + newTodoPrio;
+      } else {
+        alert("Something went wrong");
+      }
+    });
+  });
+}
+
+
 
 fetch("/tododata")
   .then(function (response) {
