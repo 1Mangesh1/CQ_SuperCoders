@@ -88,14 +88,14 @@ function showTodoToUI(todo) {
   todoDiv.appendChild(document.createElement("br"));
   todoDiv.appendChild(doneCheckbox);
   todoDiv.appendChild(delBtn);
-  // todoDiv.appendChild(editBtn);
+  todoDiv.appendChild(editBtn);
 
   // Create and append the status label for marking the task as completed
   updateStatusText(doneCheckbox.checked, todoDiv);
 
   handleCheckboxChange(todo, todoText, todoPrio, doneCheckbox, todoDiv);
   handleDeleteClick(todo, todoDiv, delBtn);
-  // handleEditClick(todo, todoText, todoPrio, editBtn);
+  handleEditClick(todo, todoText, todoPrio, editBtn);
 
   if (todo.done === "done") {
     todoText.style.textDecoration = "line-through";
