@@ -171,23 +171,15 @@ app.put("/todoedit", uploadTodoImg.single("todoimg"), (req, res) => {
     return res.status(400).send("Missing fields");
   }
 
-  TodoModel.findById(id)
+  TodoModel.findOneAndUpdate({ id: id }, { inp: inp, pri: pri, todoimg: todoimg.filename }, { new: true })
     .then((todo) => {
-      todo.todoimg = todoimg.filename;
-      todo.inp = inp;
-      todo.pri = pri;
-      todo
-        .save()
-        .then(() => {
-          res.status(200).json(todo);
-        })
-        .catch((err) => {
-          console.error("Error saving todo:", err);
-          res.status(500).send("Internal Server Error");
-        });
+      if (!todo) {
+        return res.status(404).send("Todo not found");
+      }
+      res.status(200).json(todo);
     })
     .catch((err) => {
-      console.error("Error finding todo:", err);
+      console.error("Error updating todo:", err);
       res.status(500).send("Internal Server Error");
     });
 });

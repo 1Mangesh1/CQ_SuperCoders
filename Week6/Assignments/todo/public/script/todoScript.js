@@ -95,7 +95,7 @@ function showTodoToUI(todo) {
 
   handleCheckboxChange(todo, todoText, todoPrio, doneCheckbox, todoDiv);
   handleDeleteClick(todo, todoDiv, delBtn);
-  handleEditClick(todo, todoText, todoPrio, editBtn);
+  handleEditClick(todo, todoText, todoPrio, editBtn,todoimg);
 
   if (todo.done === "done") {
     todoText.style.textDecoration = "line-through";
@@ -173,7 +173,7 @@ function updateStatusText(checked, todoDiv) {
   todoDiv.appendChild(statusLabel);
 }
 
-function handleEditClick(todo, todoText, todoPrio, editBtn) {
+function handleEditClick(todo, todoText, todoPrio, editBtn,todoimg) {
   editBtn.addEventListener("click", function () {
     const newInp = prompt("Edit Todo:", todo.inp);
     const newPri = prompt("Edit Priority:", todo.pri);
@@ -202,6 +202,7 @@ function handleEditClick(todo, todoText, todoPrio, editBtn) {
             todoText.innerText = "Todo: " + newInp;
             todoPrio.innerText = "Priority: " + newPri;
             todoimg.src = URL.createObjectURL(file);
+           
             // showTodoToUI(todo);
           } else {
             alert("Something went wrong");
