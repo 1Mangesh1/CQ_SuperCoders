@@ -1,0 +1,63 @@
+
+<style>
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 50px;
+    }
+
+    label {
+        margin-top: 20px;
+        font-size: 20px;
+
+    }
+
+    input, select {
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+    }
+
+    button[type="submit"] {
+        margin-top: 30px;
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #3e8e41;
+    }
+</style>
+
+<!-- Registration form -->
+<form action="/register" method="POST">
+    
+
+
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+
+    <label for="email">Email:</label>
+    <input type="email" id="employeeEmail" name="employeeEmail" required>
+
+    <label for="password">Password:</label>
+    <input type="password" id="employeePassword" name="employeePassword" required>
+
+    <label for="usertype">I am a </label>
+    <select id="usertype" name="usertype">
+        <option value="customer">Customer</option>
+        <option value="employee">Employee</option>
+    </select><br>
+
+    <button type="submit">Register</button>
+</form>
+

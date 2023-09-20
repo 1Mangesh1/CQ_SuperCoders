@@ -1,0 +1,44 @@
+<!-- FILEPATH: e:\work\CQ\Week7\Project\views\index.ejs -->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TMS</title>
+    </head>
+    <body>
+  
+        <%- include('components/header') %>
+
+        <h1>Submit a Ticket</h1>
+        <form action="/submit-ticket" method="POST" enctype="multipart/form-data" >
+            <label for="title">Title:</label><br>
+            <textarea id="title" name="title" rows="1" cols="10" required></textarea><br>
+
+            <label for="type">Type:</label>
+            <select id="type" name="type" required>
+                <option value="finance">Finance</option>
+                <option value="delivery">Delivery</option>
+                <option value="technical">Technical</option>
+                <option value="hardware">Hardware</option>
+            </select><br>
+
+            <label for="desc">Description:</label><br>
+            <textarea id="desc" name="desc" rows="5" cols="50" required></textarea><br>
+
+            <label for="pri">Priority:</label>
+            <select id="pri" name="pri" required>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select><br>
+
+            <label for="ticimg">Ticket Image:</label>
+            <input type="file" id="ticimg" name="ticimg" accept="image/*"><br>
+
+            <input type="submit" value="Submit">
+        </form>
+    </body>
+</html>
+
+
+
