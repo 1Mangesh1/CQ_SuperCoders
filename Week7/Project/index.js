@@ -20,9 +20,9 @@ upload.single("chatimg");
 
 upload.single("ticimg");
 
-app.use(express.static("public"));
-app.use(express.static("tupload"));
-app.use(express.static("chatupload"));
+app.use(express.static("public/"));
+app.use(express.static("tupload/"));
+app.use(express.static("chatupload/"));
 
 app.use(express.urlencoded({ extended: false }));
 
@@ -93,6 +93,7 @@ db.init()
 app.post("/submit-ticket", upload.single("ticimg"), async (req, res) => {
   const ticket = new TicketModel({
     id: Date.now(),
+    title: req.body.title,
     type: req.body.type,
     desc: req.body.desc,
     pri: req.body.pri,
