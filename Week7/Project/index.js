@@ -9,6 +9,7 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const socketServer = new Server(server);
 
+
 const db = require("./model/db");
 const UserModel = require("./model/User");
 const TicketModel = require("./model/Ticket");
@@ -16,15 +17,18 @@ const TicketModel = require("./model/Ticket");
 const upload = multer({ dest: "tupload/" });
 const chatupload = multer({ dest: "chatupload/" });
 
-upload.single("chatimg");
+chatupload.single("chatimg");
 
 upload.single("ticimg");
 
-app.use(express.static("public/"));
-app.use(express.static("tupload/"));
-app.use(express.static("chatupload/"));
+// app.use(express.static("public/"));
+// app.use(express.static("tupload/"));
+// app.use(express.static("chatupload/"));
 
 app.use(express.urlencoded({ extended: false }));
+
+// app.use(express.static(__dirname + '/views/chat.ejs'));
+
 
 app.use(
   session({
@@ -42,6 +46,14 @@ app.get("/", checkAuth , (req, res) => {
 
 app.get("/login", (req, res) => {
   res.render("login.ejs");
+});
+
+app.get("/tupload/:filename", (req, res) => {
+  res.sendFile(__dirname + "/tupload/" + req.params.filename);
+});
+
+app.get("/chatupload/:filename", (req, res) => {
+  res.sendFile(__dirname + "/chatupload/" + req.params.filename);
 });
 
 app.post("/login", async (req, res) => {
@@ -109,6 +121,16 @@ app.get("/tickets", async (req, res) => {
   res.render("tickets.ejs", { tickets: tickets });
 });
 
+app.get("/ticket/:id", async (req, res) => {
+  const ticket = await TicketModel.findOne({ id: req.params.id });
+  res.render("ticket.ejs", { ticket: ticket });
+});
+
+app.get("/chat", async (req, res) => {
+  const tickets = await TicketModel.find();
+  res.render("chat.ejs", { tickets: tickets });
+}); 
+
 function checkAuth(req, res, next) {
   if (req.session.username) {
     next();
@@ -116,3 +138,14 @@ function checkAuth(req, res, next) {
     res.redirect("/login");
   }
 }
+
+
+socketServer.on("connection", (socket) => {
+  console.log("A user connected");
+  socket.on("message", (message) => {
+    socketServer.emit("message", message);
+  });
+  socket.on("disconnect", () => {
+    console.log("A user disconnected");
+  });
+});
