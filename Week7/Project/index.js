@@ -135,10 +135,10 @@ app.get("/mytickets/:username", async (req, res) => {
   });
 });
 
-app.get("/ticket/:type", async (req, res) => {
+app.get("/tickettype/:type", async (req, res) => {
   const type = req.params.type;
   const tickets = await TicketModel.find();
-  res.render("ticket.ejs", {
+  res.render("tickettype.ejs", {
     tickets: tickets,
     username: req.session.username,
     type: type,
@@ -161,11 +161,15 @@ app.get("/ticketshome", async (req, res) => {
   });
 });
 
+
+
 app.get("/ticket/:id", async (req, res) => {
-  const ticket = await TicketModel.findById(req.params.id);
-  res.render("ticket.ejs", { ticket: ticket, username: req.session.username, id: req.params.id });
+  const id = req.params.id;
+
+  const ticket = await TicketModel.find();
+  res.render("ticket.ejs", { id: id,tickets: ticket, username: req.session.username });
 });
-//id chuktey
+
 
 app.get("/chat", async (req, res) => {
   const tickets = await TicketModel.find();
