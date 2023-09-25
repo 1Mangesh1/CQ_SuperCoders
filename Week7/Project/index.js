@@ -9,7 +9,6 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const socketServer = new Server(server);
 
-
 const db = require("./model/db");
 const UserModel = require("./model/User");
 const TicketModel = require("./model/Ticket");
@@ -27,8 +26,7 @@ upload.single("ticimg");
 
 app.use(express.urlencoded({ extended: false }));
 
-// app.use(express.static(__dirname + '/views/chat.ejs'));
-
+app.use(express.static(__dirname + "/views/chat.ejs"));
 
 app.use(
   session({
@@ -40,7 +38,7 @@ app.use(
 
 app.set("view engine", "ejs");
 
-app.get("/", checkAuth , (req, res) => {
+app.get("/", checkAuth, (req, res) => {
   res.render("index.ejs", { username: req.session.username });
 });
 
@@ -63,7 +61,12 @@ app.post("/login", async (req, res) => {
   });
   if (user) {
     req.session.username = user.username;
-    res.redirect("/");
+    req.session.usertype = user.role;
+    if (user.role === "admin") {
+      res.redirect("/ticketshome");
+    } else {
+      res.redirect("/");
+    }
   } else {
     res.redirect("/login");
   }
@@ -84,7 +87,6 @@ app.post("/register", async (req, res) => {
   res.redirect("/login");
 });
 
-
 app.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/login");
@@ -93,7 +95,8 @@ app.get("/logout", (req, res) => {
 db.init()
   .then(function () {
     console.log("db connected");
-    app.listen(3000, () => {
+    server.listen(3000, () => {
+      // app.listen(3000, () => {
       console.log("server started at http://localhost:3000");
     });
   })
@@ -111,25 +114,63 @@ app.post("/submit-ticket", upload.single("ticimg"), async (req, res) => {
     pri: req.body.pri,
     status: "Open",
     ticimg: req.file.filename,
+    user: req.session.username,
   });
   await ticket.save();
-  res.redirect("/tickets");
+  if (req.session.usertype == "admin") {
+    res.redirect("/ticketshome");
+  } else {
+    //res.redirect("/mytickets/:username",{user: req.session.username});
+    res.redirect(302, `/mytickets/${req.session.username}`);
+  }
+});
+
+app.get("/mytickets/:username", async (req, res) => {
+  const tickets = await TicketModel.find();
+  const user = req.session.username;
+  res.render("mytickets.ejs", {
+    tickets: tickets,
+    user: user,
+    username: req.session.username,
+  });
+});
+
+app.get("/ticket/:type", async (req, res) => {
+  const type = req.params.type;
+  const tickets = await TicketModel.find();
+  res.render("ticket.ejs", {
+    tickets: tickets,
+    username: req.session.username,
+    type: type,
+  });
 });
 
 app.get("/tickets", async (req, res) => {
   const tickets = await TicketModel.find();
-  res.render("tickets.ejs", { tickets: tickets });
+  res.render("tickets.ejs", {
+    tickets: tickets,
+    username: req.session.username,
+  });
+});
+
+app.get("/ticketshome", async (req, res) => {
+  const tickets = await TicketModel.find();
+  res.render("ticketshome.ejs", {
+    tickets: tickets,
+    username: req.session.username,
+  });
 });
 
 app.get("/ticket/:id", async (req, res) => {
-  const ticket = await TicketModel.findOne({ id: req.params.id });
-  res.render("ticket.ejs", { ticket: ticket });
+  const ticket = await TicketModel.findById(req.params.id);
+  res.render("ticket.ejs", { ticket: ticket, username: req.session.username, id: req.params.id });
 });
+//id chuktey
 
 app.get("/chat", async (req, res) => {
   const tickets = await TicketModel.find();
-  res.render("chat.ejs", { tickets: tickets });
-}); 
+  res.render("chat.ejs", { tickets: tickets, username: req.session.username });
+});
 
 function checkAuth(req, res, next) {
   if (req.session.username) {
@@ -139,11 +180,11 @@ function checkAuth(req, res, next) {
   }
 }
 
-
 socketServer.on("connection", (socket) => {
   console.log("A user connected");
   socket.on("message", (message) => {
-    socketServer.emit("message", message);
+    console.log(message);
+    socket.broadcast.emit("message", message);
   });
   socket.on("disconnect", () => {
     console.log("A user disconnected");

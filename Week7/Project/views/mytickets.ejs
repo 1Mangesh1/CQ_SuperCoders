@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tickets</title>
+      
+    </head>
+    <body>
+        <%- include('components/header') %>
+        <h1>Tickets for <%= user %></h1>
+        <table>
+         
+            <tbody>
+                <% if (tickets.length > 0) { %> <% tickets.forEach(function(ticket) { %>
+                <% if (ticket.user == user) { %>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Image</th>
+                            <th>View</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><%= ticket.id %></td>
+                            <td><%= ticket.title %></td>
+                            <td><%= ticket.desc %></td>
+                            <td><%= ticket.status %></td>
+                            <td>
+                                <img
+                                    src="/tupload/<%= ticket.ticimg %>"
+                                    alt="Ticket Image"
+                                    width="100px"
+                                />
+                            </td>
+                            <td><a href="/ticket/<%= ticket.id %>">View</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <% } %> <% }); %> <% } else { %>
+                <p>You have no tickets.</p>
+                <% } %>
+            </tbody>
+        </table>
+    </body>
+</html>

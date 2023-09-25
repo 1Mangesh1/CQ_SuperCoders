@@ -8,6 +8,7 @@ const ticketSchema = new mongoose.Schema({
     pri : String,
     status : String,
     ticimg : String,
+    user : String,
 });
 
 const Ticket = mongoose.model('Ticket', ticketSchema);
