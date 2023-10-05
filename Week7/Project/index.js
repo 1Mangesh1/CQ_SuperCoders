@@ -12,6 +12,7 @@ const socketServer = new Server(server);
 const db = require("./model/db");
 const UserModel = require("./model/User");
 const TicketModel = require("./model/Ticket");
+const ChatMessage = require("./model/Chat");
 
 const upload = multer({ dest: "tupload/" });
 const chatupload = multer({ dest: "chatupload/" });
@@ -161,19 +162,26 @@ app.get("/ticketshome", async (req, res) => {
   });
 });
 
-
-
 app.get("/ticket/:id", async (req, res) => {
   const id = req.params.id;
 
   const ticket = await TicketModel.find();
-  res.render("ticket.ejs", { id: id,tickets: ticket, username: req.session.username });
+  res.render("ticket.ejs", {
+    id: id,
+    tickets: ticket,
+    username: req.session.username,
+  });
 });
 
-
-app.get("/chat", async (req, res) => {
+app.get("/chat/:id", async (req, res) => {
+  const id = req.params.id;
   const tickets = await TicketModel.find();
-  res.render("chat.ejs", { tickets: tickets, username: req.session.username });
+  
+  res.render("chat.ejs", {
+    tickets: tickets,
+    username: req.session.username,
+    id: id,
+  });
 });
 
 function checkAuth(req, res, next) {
@@ -184,13 +192,50 @@ function checkAuth(req, res, next) {
   }
 }
 
+
+const activeSockets = {};
+
 socketServer.on("connection", (socket) => {
   console.log("A user connected");
-  socket.on("message", (message) => {
-    console.log(message);
-    socket.broadcast.emit("message", message);
+
+  // Listen for a custom event, e.g., "join"
+  socket.on("join", (data) => {
+    // Store the socket in the activeSockets object
+    activeSockets[data.userId] = socket;
+
+    console.log(`User ${data.userId} joined the chat for Ticket #${data.ticketId}`);
+
+    // You can also send a message to this socket if needed
+    // socket.emit("message", "Welcome to the chat!");
   });
+
+  // Listen for a custom event, e.g., "chat"
+  socket.on("chat", (data) => {
+    // Broadcast the message to all connected sockets
+    server.emit("chat", {
+      type: "chat",
+      text: data.text,
+    });
+
+    // If you want to send a message to a specific user, you can do so like this:
+    // if (activeSockets[data.targetUserId]) {
+    //   activeSockets[data.targetUserId].emit("chat", {
+    //     type: "chat",
+    //     text: data.text,
+    //   });
+    // }
+  });
+
+  // Handle disconnection
   socket.on("disconnect", () => {
-    console.log("A user disconnected");
+    // Remove the socket from the activeSockets object
+    // You might want to add more logic here, e.g., cleaning up user data
+    for (const userId in activeSockets) {
+      if (activeSockets[userId] === socket) {
+        delete activeSockets[userId];
+        console.log(`User ${userId} disconnected`);
+        break;
+      }
+    }
   });
 });

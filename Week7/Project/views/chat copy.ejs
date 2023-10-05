@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO Chat</title>
+    <style>
+      body {
+        margin: 0;
+        padding-bottom: 3rem;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+      }
+
+      #container {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      h1 {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 30px;
+      }
+
+      label,
+      input {
+        margin-bottom: 10px;
+      }
+
+      #chatroom,
+      #privateChat {
+        display: none;
+        margin-top: 50px;
+        border: 1px solid #ccc;
+        padding: 15px;
+      }
+
+      h2 {
+        margin-bottom: 10px;
+        text-align: center;
+      }
+
+      ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      li {
+        padding: 0.5rem 1rem;
+      }
+
+      li:nth-child(odd) {
+        background: #f0f0f0;
+      }
+
+      #messages {
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      .chat-input {
+        display: flex;
+      }
+
+      .chat-input input {
+        flex: 1;
+        padding: 5px;
+        margin-right: 5px;
+      }
+
+      .chat-input button {
+        padding: 5px 10px;
+      }
+
+      #joinForm,
+      #privateForm {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #joinForm button,
+      #privateForm button {
+        padding: 10px 20px;
+        background-color: #4caf50;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 4px;
+      }
+
+      #joinForm button:hover,
+      #privateForm button:hover {
+        background-color: #45a049;
+      }
+
+      #recipient {
+        width: 100%;
+      }
+
+      /* Styles for the "typing now" message */
+      #typingNow {
+        color: #888;
+        font-style: italic;
+      }
+
+      /* Styles for the "user connected" message */
+      #userConnected {
+        color: #00f;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="/socket.io/socket.io.js"></script>
+    <div id="container">
+      <!-- <div id="chatroom" style="display: none">
+        <h2>Chatroom</h2>
+        <ul id="messages"></ul>
+        <form id="form" class="chat-input">
+          <input
+            id="input"
+            autocomplete="off"
+            placeholder="Type your message..."
+          />
+          <button>Send</button>
+        </form>
+      </div> -->
+
+      <% tickets.forEach(function(ticket) { %>
+        <% if (id == ticket.id) { %>
+          <div id="privateChat">
+            <h2>Chat about ticket <%= ticket.id %></h2>
+            <form id="privateForm" class="chat-input">
+              <input id="recipient" type="text" placeholder="<%= ticket.user %>" />
+              <input id="privateInput" type="text" placeholder="Type your message here" />
+              <button>Send</button>
+            </form>
+          </div>
+        <% } %>
+      
+        <ul id="privateMessages"></ul>
+      </div>
+    </div>
+   
+
+  
+    <script>
+      const socket = io();
+      // const joinForm = document.getElementById("joinForm");
+      // const chatroomDiv = document.getElementById("chatroom");
+      const privateChatDiv = document.getElementById("privateChat");
+      // const messages = document.getElementById("messages");
+      const privateMessages = document.getElementById("privateMessages");
+      // const form = document.getElementById("form");
+      const privateForm = document.getElementById("privateForm");
+      // const input = document.getElementById("input");
+      const privateInput = document.getElementById("privateInput");
+      const recipientInput = document.getElementById("recipient");
+
+      function showUserConnectedMessage(recipient) {
+        const userConnectedMessage = document.createElement("li");
+        userConnectedMessage.textContent = `${recipient} has joined the chat`;
+        userConnectedMessage.id = "userConnected";
+        messages.appendChild(userConnectedMessage);
+        setTimeout(() => {
+          userConnectedMessage.remove();
+        }, 5000);
+      }
+
+      // joinForm.addEventListener("submit", (e) => {
+      //   e.preventDefault();
+      //   const name = document.getElementById("name").value;
+      //   const username = document.getElementById("username").value;
+      //   socket.emit("join", { name, username });
+
+      //   chatroomDiv.style.display = "block";
+      //   privateChatDiv.style.display = "block";
+
+      //   joinForm.style.display = "none";
+      // });
+
+      // form.addEventListener("submit", (e) => {
+      //   e.preventDefault();
+      //   const msg = input.value;
+      //   if (msg) {
+      //     socket.emit("chat message", msg);
+      //     input.value = "";
+      //   }
+      // });
+
+      // privateForm.addEventListener("submit", (e) => {
+      //   e.preventDefault();
+      //   const recipient = recipientInput.value;
+      //   const msg = privateInput.value;
+      //   if (recipient && msg) {
+      //     socket.emit("privateMessage", { recipient, message: msg });
+      //     privateInput.value = "";
+      //   }
+      // });
+
+      // socket.on("chat message from server", ({ recipient, message }) => {
+      //   const item = document.createElement("li");
+      //   item.textContent = `${recipient}: ${message}`;
+      //   messages.appendChild(item);
+      // });
+
+      // socket.on("privateMessage", ({ sender, message }) => {
+      //   const item = document.createElement("li");
+      //   item.textContent = `${sender} (private): ${message}`;
+      //   privateMessages.appendChild(item);
+      // });
+
+      // socket.on("privateMessageError", ({ recipient, message }) => {
+      //   alert(`${message} Recipient: ${recipient}`);
+      // });
+
+      socket.on("user connected", (username) => {
+        showUserConnectedMessage(username);
+      });
+
+      socket.on("userDisconnected", (userData) => {
+        const { username } = userData;
+        delete users[socket.id];
+        const userDisconnectedMessage = document.createElement("li");
+        userDisconnectedMessage.textContent = `${username} has left the chat`;
+        userDisconnectedMessage.id = "userDisconnected";
+        messages.appendChild(userDisconnectedMessage);
+
+        setTimeout(() => {
+          userDisconnectedMessage.remove();
+        }, 5000);
+      });
+
+      function showUserIsTypingMessage(username) {
+        const typingMessage = document.createElement("li");
+        typingMessage.textContent = `${username} is typing...`;
+        typingMessage.id = "typingNow";
+        messages.appendChild(typingMessage);
+      }
+
+      function hideUserIsTypingMessage() {
+        const typingMessage = document.getElementById("typingNow");
+        if (typingMessage) {
+          typingMessage.remove();
+        }
+      }
+
+      input.addEventListener("input", () => {
+        const { username } = users[socket.id];
+        if (input.value) {
+          socket.emit("typing", username);
+        } else {
+          socket.emit("stoppedTyping", username);
+          hideUserIsTypingMessage();
+        }
+      });
+
+      socket.on("typing", (username) => {
+        showUserIsTypingMessage(username);
+      });
+
+      socket.on("stoppedTyping", () => {
+        hideUserIsTypingMessage();
+      });
+
+      // Emit a private chat room event based on the ticket ID
+      const ticketId = "<%= ticket.id %>";
+      socket.emit("joinPrivateRoom", ticketId);
+
+    
+      // Function to send a private message
+      function sendPrivateMessage() {
+        const messageInput = document.getElementById("privateInput");
+        const message = messageInput.value.trim();
+      
+        if (message !== "") {
+          const sender = "<%= username ? 'Admin' : 'User' %>"; // Determine sender based on user typeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  
+          socket.emit("privateMessage", { ticketId, sender, message });
+          appendMessage(`You: ${message}`);
+          messageInput.value = "";
+        }
+      }
+
+      // Listen for incoming private chat messages
+      socket.on("privateMessage", (data) => {
+        appendMessage(`${data.sender}: ${data.message}`);
+      });
+
+      // Add an event listener for the private chat form submission
+      // const privateForm = document.getElementById("privateForm");
+      privateForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        sendPrivateMessage();
+      });
+
+      // Function to append a message to the chat UI
+      function appendMessage(message) {
+        const ul = document.getElementById("privateMessages");
+        const li = document.createElement("li");
+        li.textContent = message;
+        ul.appendChild(li);
+      }
+    </script>
+  </body>
+</html>
+
+<% }); %>

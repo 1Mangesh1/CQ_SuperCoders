@@ -27,7 +27,7 @@
             input[type="text"],
             input[type="password"],
             select {
-                width: 100%;
+                width: 90%;
                 padding: 10px;
                 border: 1px solid #ccc;
                 border-radius: 3px;
@@ -56,11 +56,29 @@
             <label for="password">Password:</label>
             <input type="password" id="password" name="password"><br><br>
             <label for="usertype">User Type:</label>
-            <select id="usertype" name="usertype">
-                <option value="admin">Admin</option>
-                <option value="customer">Customer</option>
-                <option value="employee">Employee</option>
-            </select><br><br>
+                        
+            <div>
+                <input type="radio" id="admin" name="usertype" value="admin">
+                <label for="admin">Admin</label>
+            </div>
+            <div>
+                <input type="radio" id="customer" name="usertype" value="customer">
+                <label for="customer">Customer</label>
+            </div>
+            <div>
+                <input type="radio" id="employee" name="usertype" value="employee">
+                <label for="employee">Employee</label>
+            </div>
+            <br><br>
+            <style>
+                .radio-group {
+                    text-align: center;
+                }
+                div {
+                    display: inline-block;
+                    margin-right: 20px;
+                }
+            </style>
             <input type="submit" value="Login"> 
             <br> <a href="/register"><p>Register</p></a>
         </form>
