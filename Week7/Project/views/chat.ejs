@@ -1,84 +1,33 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Chat</title>
-    <style>
-      /* Add your custom styles here */
-    </style>
-  </head>
-  <body>
-    <% tickets.forEach(function(ticket) { %> <% if (id == ticket.id) {%>
-    <h1>Ticket #<%= ticket.id %></h1>
-    <p>Username: <%= ticket.user %></p>
-
-    <% } }) %>
-    <hr />
-    <div id="chat-container">
-      <ul id="chat-messages">
-        <!-- Messages will be added dynamically with JavaScript -->
-      </ul>
-      <form id="chat-form">
-        <input
-          type="text"
-          id="message-input"
-          placeholder="Type your message..."
-        />
-        <button type="submit">Send</button>
-      </form>
-    </div>
-
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-      const ticket = ticket;
-      const userId = id;
-
-      // Connect to the server's WebSocket endpoint
-      const socket = io.connect("http://localhost:3000");
-
-      // When the WebSocket connection is established
-      socket.on("connect", () => {
-        // Send a message to the server to join the ticket's chat room
-        socket.emit("join", {
-          ticketId: ticket.id,
-          userId: userId,
-        });
-      });
-
-      // When a message is received from the server
-      socket.on("chat", (message) => {
-        // If the message is a chat message
-        if (message.type === "chat") {
-          // Add the message to the chat interface
-          const messagesList = document.getElementById("chat-messages");
-          const messageItem = document.createElement("li");
-          messageItem.textContent = message.text;
-          messagesList.appendChild(messageItem);
-        }
-      });
-
-      // When the chat form is submitted
-      document
-        .getElementById("chat-form")
-        .addEventListener("submit", (event) => {
-          event.preventDefault();
-
-          // Get the message input value
-          const messageInput = document.getElementById("message-input");
-          const messageText = messageInput.value.trim();
-
-          // If the message is not empty
-          if (messageText !== "") {
-            // Send the message to the server
-            socket.emit("chat", {
-              ticketId: ticket.id,
-              userId: userId,
-              text: messageText,
-            });
-
-            // Clear the message input
-            messageInput.value = "";
-          }
-        });
-    </script>
-  </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <% tickets.forEach(function(ticket) { %>
+        <% if (id == ticket.id) { %>
+    <title>Chat with <%= (ticket.user == username) ? 'admin' : ticket.user %></title>
+</head>
+<body>
+    <h1>Chat with <%= (ticket.user == username) ? 'admin' : ticket.user %></h1>
+    <h2>about ticket : # <%=ticket.id%></h2>
+    <h3>Title <%=ticket.title%></h3>
+    <div id="messages">
+        <% messages.forEach(function(message) { %>
+            <% if (message.ticketId == ticket.id) { %>
+                <% if (message.sender == username) { %>
+                    <div class="message">
+                        <p class="message-text"><%= message.text %></p>
+                        <p class="message-sender">You</p>
+                    </div>
+                <% } else { %>
+                    <div class="message">
+                        <p class="message-text"><%= message.text %></p>
+                        <p class="message-sender"><%= message.sender %></p>
+                    </div>
+                <% } %>
+            <% } %>
+        <% }) %>
+</body>
 </html>
+<% } %>
+<% }) %>

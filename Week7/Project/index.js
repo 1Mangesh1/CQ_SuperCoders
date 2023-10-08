@@ -118,12 +118,9 @@ app.post("/submit-ticket", upload.single("ticimg"), async (req, res) => {
     user: req.session.username,
   });
   await ticket.save();
-  if (req.session.usertype == "admin") {
-    res.redirect("/ticketshome");
-  } else {
-    //res.redirect("/mytickets/:username",{user: req.session.username});
-    res.redirect(302, `/mytickets/${req.session.username}`);
-  }
+
+  //res.redirect("/mytickets/:username",{user: req.session.username});
+  res.redirect(302, `/mytickets/${req.session.username}`);
 });
 
 app.get("/mytickets/:username", async (req, res) => {
@@ -176,7 +173,7 @@ app.get("/ticket/:id", async (req, res) => {
 app.get("/chat/:id", async (req, res) => {
   const id = req.params.id;
   const tickets = await TicketModel.find();
-  
+
   res.render("chat.ejs", {
     tickets: tickets,
     username: req.session.username,
@@ -192,50 +189,29 @@ function checkAuth(req, res, next) {
   }
 }
 
-
 const activeSockets = {};
 
 socketServer.on("connection", (socket) => {
-  console.log("A user connected");
-
-  // Listen for a custom event, e.g., "join"
+  console.log("connected");
   socket.on("join", (data) => {
-    // Store the socket in the activeSockets object
-    activeSockets[data.userId] = socket;
-
-    console.log(`User ${data.userId} joined the chat for Ticket #${data.ticketId}`);
-
-    // You can also send a message to this socket if needed
-    // socket.emit("message", "Welcome to the chat!");
+    socket.join(data.room);
+    activeSockets[data.username] = socket.id;
+    console.log(activeSockets);
   });
 
-  // Listen for a custom event, e.g., "chat"
-  socket.on("chat", (data) => {
-    // Broadcast the message to all connected sockets
-    server.emit("chat", {
-      type: "chat",
-      text: data.text,
+  socket.on("send-message", (data) => {
+    const chat = new ChatMessage({
+      id: Date.now(),
+      username: data.username,
+      message: data.message,
+      chatimg: data.chatimg,
+      room: data.room,
     });
-
-    // If you want to send a message to a specific user, you can do so like this:
-    // if (activeSockets[data.targetUserId]) {
-    //   activeSockets[data.targetUserId].emit("chat", {
-    //     type: "chat",
-    //     text: data.text,
-    //   });
-    // }
-  });
-
-  // Handle disconnection
-  socket.on("disconnect", () => {
-    // Remove the socket from the activeSockets object
-    // You might want to add more logic here, e.g., cleaning up user data
-    for (const userId in activeSockets) {
-      if (activeSockets[userId] === socket) {
-        delete activeSockets[userId];
-        console.log(`User ${userId} disconnected`);
-        break;
-      }
-    }
+    chat.save();
+    socketServer.to(data.room).emit("message-received", {
+      username: data.username,
+      message: data.message,
+      chatimg: data.chatimg,
+    });
   });
 });

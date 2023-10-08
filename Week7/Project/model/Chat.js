@@ -1,10 +1,11 @@
 const mongoose = require("mongoose");
 
-const chatMessage = new mongoose.Schema({
+const chatMessageSchema = new mongoose.Schema({
   ticketId: String,
   sender: String,
   message: String,
+  media: String, // Store the filename for media
   timestamp: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model("ChatMessage", chatMessage);
+const ChatMessage = mongoose.model("ChatMessage", chatMessageSchema);
