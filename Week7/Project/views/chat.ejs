@@ -9,8 +9,8 @@
 </head>
 <body>
     <h1>Chat with <%= (ticket.user == username) ? 'admin' : ticket.user %></h1>
-    <h2>about ticket : # <%=ticket.id%></h2>
-    <h3>Title <%=ticket.title%></h3>
+    <h2>about ticket : # <%= ticket.id %></h2>
+    <h3>Title <%= ticket.title %></h3>
     <div id="messages">
         <% messages.forEach(function(message) { %>
             <% if (message.ticketId == ticket.id) { %>
@@ -27,6 +27,56 @@
                 <% } %>
             <% } %>
         <% }) %>
+    </div>
+    <div id="send-message">
+        <form id="chat-form">
+            <input type="text" name="message" id="message-input" placeholder="Type your message here">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const ticketId = `<%= ticket.id %>`;
+        const username = `<%= username %>`;
+        const socket = io();
+
+        // When the WebSocket connection is established
+        socket.on("connect", () => {
+            // Send a message to the server to join the ticket's chat room
+            socket.emit("joinRoom", ticketId, username);
+        });
+
+        // When a new chat message is received
+        socket.on("chatMessage", (data) => {
+            appendMessage(data.sender, data.message);
+        });
+
+        // Handle form submission to send a chat message
+        document.getElementById("chat-form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const messageInput = document.getElementById("message-input");
+            const messageText = messageInput.value.trim();
+            if (messageText !== "") {
+                // Send the chat message to the server
+                socket.emit("chatMessage", { ticketId, username, message: messageText });
+                appendMessage("You", messageText);
+                messageInput.value = "";
+            }
+        });
+
+        // Function to append a message to the chat interface
+        function appendMessage(sender, message) {
+            const messagesList = document.getElementById("messages");
+            const messageItem = document.createElement("div");
+            messageItem.classList.add("message");
+            messageItem.innerHTML = `
+                <p class="message-sender">${sender}</p>
+                <p class="message-text">${message}</p>
+            `;
+            messagesList.appendChild(messageItem);
+        }
+    </script>
 </body>
 </html>
 <% } %>

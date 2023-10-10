@@ -170,14 +170,17 @@ app.get("/ticket/:id", async (req, res) => {
   });
 });
 
+// const ChatMessage = require("./model/Chat");
+
 app.get("/chat/:id", async (req, res) => {
   const id = req.params.id;
   const tickets = await TicketModel.find();
-
+const messages = await ChatMessage.find({ room: id }) 
   res.render("chat.ejs", {
     tickets: tickets,
     username: req.session.username,
     id: id,
+    messages: messages,
   });
 });
 
@@ -189,29 +192,35 @@ function checkAuth(req, res, next) {
   }
 }
 
-const activeSockets = {};
+const activeRooms = {}; // Store active chat rooms
 
 socketServer.on("connection", (socket) => {
-  console.log("connected");
-  socket.on("join", (data) => {
-    socket.join(data.room);
-    activeSockets[data.username] = socket.id;
-    console.log(activeSockets);
-  });
+    console.log("Connected:", socket.id);
 
-  socket.on("send-message", (data) => {
-    const chat = new ChatMessage({
-      id: Date.now(),
-      username: data.username,
-      message: data.message,
-      chatimg: data.chatimg,
-      room: data.room,
+    socket.on("joinRoom", (roomId, username) => {
+        socket.join(roomId); // Join the room identified by the ticketId
+        activeRooms[roomId] = activeRooms[roomId] || { admin: null, user: null };
+        
+        if (username === "admin") {
+            // Admin joins the room
+            activeRooms[roomId].admin = socket.id;
+        } else {
+            // User joins the room
+            activeRooms[roomId].user = socket.id;
+        }
     });
-    chat.save();
-    socketServer.to(data.room).emit("message-received", {
-      username: data.username,
-      message: data.message,
-      chatimg: data.chatimg,
+
+    socket.on("chatMessage", (data) => {
+        // Broadcast the chat message to the appropriate room
+        const roomId = data.ticketId;
+        socket.to(roomId).emit("chatMessage", {
+            sender: data.username,
+            message: data.message,
+        });
     });
-  });
+
+    socket.on("disconnect", () => {
+        console.log("Disconnected:", socket.id);
+        // Implement disconnect logic if needed
+    });
 });
