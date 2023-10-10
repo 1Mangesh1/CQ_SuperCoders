@@ -216,11 +216,14 @@ socketServer.on("connection", (socket) => {
         socket.to(roomId).emit("chatMessage", {
             sender: data.username,
             message: data.message,
+            time : data.time,
         });
     });
 
     socket.on("disconnect", () => {
         console.log("Disconnected:", socket.id);
-        // Implement disconnect logic if needed
+        socket.emit("disconnecta");
+
+        
     });
 });

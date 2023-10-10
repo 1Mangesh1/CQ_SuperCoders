@@ -6,33 +6,151 @@
     <% tickets.forEach(function(ticket) { %>
         <% if (id == ticket.id) { %>
     <title>Chat with <%= (ticket.user == username) ? 'admin' : ticket.user %></title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .chat-header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h1 {
+            margin: 0;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: scroll;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+        }
+
+        .message {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+
+        .message-sender {
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .message-time {
+            font-size: 12px;
+            margin: 0;
+        }
+
+        .message-text {
+            margin: 0;
+        }
+
+        .message-admin {
+            align-self: flex-end;
+            background-color: #ddd;
+            border-radius: 10px 10px 0 10px;
+            margin-left: 50%;
+            padding: 10px;
+            max-width: 70%;
+        }
+
+        .message-user {
+            align-self: flex-start;
+            background-color: #007bff;
+            border-radius: 10px 10px 10px 0;
+            margin-right: 50%;
+            padding: 10px;
+            max-width: 70%;
+            color: #fff;
+        }
+
+        .message-admin .message-sender {
+            text-align: right;
+        }
+
+        .message-user .message-sender {
+            text-align: left;
+        }
+
+        #send-message {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #eee;
+        }
+
+        #chat-form {
+            display: flex;
+            flex: 1;
+        }
+
+        #message-input {
+            flex: 1;
+            margin-right: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+        }
+
+        #send-button {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <h1>Chat with <%= (ticket.user == username) ? 'admin' : ticket.user %></h1>
-    <h2>about ticket : # <%= ticket.id %></h2>
-    <h3>Title <%= ticket.title %></h3>
-    <div id="messages">
-        <% messages.forEach(function(message) { %>
-            <% if (message.ticketId == ticket.id) { %>
-                <% if (message.sender == username) { %>
-                    <div class="message">
-                        <p class="message-text"><%= message.text %></p>
-                        <p class="message-sender">You</p>
-                    </div>
-                <% } else { %>
-                    <div class="message">
-                        <p class="message-text"><%= message.text %></p>
-                        <p class="message-sender"><%= message.sender %></p>
-                    </div>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>Chat with <%= (ticket.user == username) ? 'admin' : ticket.user %> about Ticket <%= ticket.title %> </h1>
+            <span id="status"></span>
+        </div>
+        <div class="chat-messages" id="messages">
+            <% messages.forEach(function(message) { %>
+                <% if (message.ticketId == ticket.id) { %>
+                    <% if (message.sender == username) { %>
+                        <div class="message message-user">
+                            <p class="message-sender">You</p>
+                            <p class="message-time"><%= message.time %></p>
+                            <p class="message-text"><%= message.text %></p>
+                        </div>
+                    <% } else { %>
+                        <div class="message message-admin">
+                            <p class="message-sender"><%= message.sender %></p>
+                            <p class="message-time"><%= message.time %></p>
+                            <p class="message-text"><%= message.text %></p>
+                        </div>
+                    <% } %>
                 <% } %>
-            <% } %>
-        <% }) %>
-    </div>
-    <div id="send-message">
-        <form id="chat-form">
-            <input type="text" name="message" id="message-input" placeholder="Type your message here">
-            <button type="submit">Send</button>
-        </form>
+            <% }) %>
+        </div>
+        <div id="send-message">
+            <form id="chat-form">
+                <input type="text" name="message" id="message-input" placeholder="Type your message here">
+                <button type="submit" id="send-button">Send</button>
+            </form>
+        </div>
     </div>
     
     <script src="/socket.io/socket.io.js"></script>
@@ -49,7 +167,12 @@
 
         // When a new chat message is received
         socket.on("chatMessage", (data) => {
-            appendMessage(data.sender, data.message);
+            appendMessage(data.sender, data.time, data.message);
+        });
+
+        socket.on("disconnecta", () => {
+            document.getElementById("send-message").innerHTML = "<h1>Disconnected</h1>";
+            
         });
 
         // Handle form submission to send a chat message
@@ -59,22 +182,30 @@
             const messageText = messageInput.value.trim();
             if (messageText !== "") {
                 // Send the chat message to the server
-                socket.emit("chatMessage", { ticketId, username, message: messageText });
-                appendMessage("You", messageText);
+                time = new Date().toLocaleTimeString();
+                socket.emit("chatMessage", { ticketId, username,time, message: messageText });
+                appendMessage("You", new Date().toLocaleTimeString(), messageText);
                 messageInput.value = "";
             }
         });
 
         // Function to append a message to the chat interface
-        function appendMessage(sender, message) {
+        function appendMessage(sender, time, message) {
             const messagesList = document.getElementById("messages");
             const messageItem = document.createElement("div");
             messageItem.classList.add("message");
+            if (sender === "You") {
+                messageItem.classList.add("message-user");
+            } else {
+                messageItem.classList.add("message-admin");
+            }
             messageItem.innerHTML = `
                 <p class="message-sender">${sender}</p>
+                <p class="message-time">${time}</p>
                 <p class="message-text">${message}</p>
             `;
             messagesList.appendChild(messageItem);
+            messagesList.scrollTop = messagesList.scrollHeight;
         }
     </script>
 </body>
