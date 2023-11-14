@@ -159,13 +159,13 @@
         const username = `<%= username %>`;
         const socket = io();
 
-        // When the WebSocket connection is established
+     
         socket.on("connect", () => {
-            // Send a message to the server to join the ticket's chat room
+            // message to server 
             socket.emit("joinRoom", ticketId, username);
         });
 
-        // When a new chat message is received
+        // new chat 
         socket.on("chatMessage", (data) => {
             appendMessage(data.sender, data.time, data.message);
         });
@@ -175,13 +175,13 @@
             
         });
 
-        // Handle form submission to send a chat message
+        // send a chat message
         document.getElementById("chat-form").addEventListener("submit", (e) => {
             e.preventDefault();
             const messageInput = document.getElementById("message-input");
             const messageText = messageInput.value.trim();
             if (messageText !== "") {
-                // Send the chat message to the server
+                // message to the server
                 time = new Date().toLocaleTimeString();
                 socket.emit("chatMessage", { ticketId, username,time, message: messageText });
                 appendMessage("You", new Date().toLocaleTimeString(), messageText);
@@ -189,7 +189,7 @@
             }
         });
 
-        // Function to append a message to the chat interface
+    
         function appendMessage(sender, time, message) {
             const messagesList = document.getElementById("messages");
             const messageItem = document.createElement("div");

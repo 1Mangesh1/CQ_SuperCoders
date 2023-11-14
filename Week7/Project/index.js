@@ -192,20 +192,20 @@ function checkAuth(req, res, next) {
   }
 }
 
-const activeRooms = {}; // Store active chat rooms
+const activeRooms = {}; // active chat rooms
 
 socketServer.on("connection", (socket) => {
     console.log("Connected:", socket.id);
 
     socket.on("joinRoom", (roomId, username) => {
-        socket.join(roomId); // Join the room identified by the ticketId
+        socket.join(roomId); // ticketId
         activeRooms[roomId] = activeRooms[roomId] || { admin: null, user: null };
         
         if (username === "admin") {
-            // Admin joins the room
+          
             activeRooms[roomId].admin = socket.id;
         } else {
-            // User joins the room
+          
             activeRooms[roomId].user = socket.id;
         }
     });
